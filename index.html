@@ -1,0 +1,1317 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulador Hipotecario Pro · Ferran Propiedades</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1F65A4">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <style>
+    :root{
+      --ink:#111827;
+      --muted:#5B6472;
+      --line:#e5e7eb;
+      --bg:#ffffff;
+      --soft:#F5F7FA;
+      --accent:#1F65A4;      /* Azul logo */
+      --accentDark:#2B4762;  /* Azul oscuro logo */
+      --ok:#16a34a;
+      --bad:#dc2626;
+      --shadow: 0 10px 30px rgba(17,24,39,.08);
+      --radius: 16px;
+    }
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(31,101,164,.18), transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, rgba(43,71,98,.14), transparent 45%),
+        linear-gradient(180deg, #ffffff 0%, var(--soft) 65%, #ffffff 100%);
+    }
+    .page{ max-width: 1040px; margin: 18px auto; padding: 0 14px 44px; }
+    .card{
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(229,231,235,.85);
+      border-radius: var(--radius);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding: 6px 2px 12px;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; min-width: 280px; }
+    .logo{
+      width:56px; height:56px;
+      border-radius: 14px;
+      border:1px solid rgba(229,231,235,.9);
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      background:#fff;
+      flex:0 0 auto;
+      box-shadow: 0 8px 18px rgba(17,24,39,.06);
+    }
+    .titlewrap h1{ font-size: 20px; margin:0; letter-spacing:.2px; }
+    .titlewrap .sub{ font-size: 12px; color:var(--muted); margin-top:3px; }
+    .topline{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .segmented{
+      display:inline-flex;
+      border:1px solid rgba(229,231,235,.95);
+      border-radius: 999px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+    .segmented button{
+      border:0;
+      background:transparent;
+      padding: 9px 12px;
+      font-weight:900;
+      font-size: 12px;
+      cursor:pointer;
+      color: var(--muted);
+    }
+    .segmented button.active{
+      background: rgba(31,101,164,.12);
+      color: var(--accentDark);
+    }
+
+    button{
+      border:1px solid rgba(229,231,235,.95);
+      background:#fff;
+      color:var(--ink);
+      padding: 9px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 13px;
+      transition: transform .02s ease, background .15s ease, border-color .15s ease;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+    button:hover{ border-color: rgba(31,101,164,.35); }
+    button:active{ transform: translateY(1px); }
+    button.primary{
+      border-color: rgba(31,101,164,.45);
+      background: rgba(31,101,164,.12);
+      color: var(--accentDark);
+    }
+    button.ghost{ background: rgba(255,255,255,.6); }
+    .btnrow{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .grid{ display:grid; gap: 12px; }
+    .section{
+      border-top: 3px solid rgba(31,101,164,.75);
+      padding-top: 10px;
+      margin-top: 6px;
+    }
+    .section h2{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(229,231,235,.95);
+      background: rgba(255,255,255,.7);
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .pill strong{ color:var(--accentDark); }
+    .formgrid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+    }
+    .field{
+      grid-column: span 3;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      padding: 10px 10px 9px;
+      border:1px solid rgba(229,231,235,.95);
+      border-radius: 14px;
+      background: rgba(255,255,255,.9);
+      min-height: 72px;
+    }
+    .field label{
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .tag{
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border:1px solid rgba(229,231,235,.95);
+      color: var(--muted);
+      background:#fff;
+    }
+    .tag.ok{ color: var(--ok); border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.06); }
+    .tag.bad{ color: var(--bad); border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.06); }
+
+    .field input, .field select{
+      border:1px solid rgba(229,231,235,.95);
+      border-radius: 12px;
+      padding: 10px 10px;
+      font-size: 14px;
+      outline:none;
+      width:100%;
+      background:#fff;
+    }
+    .field input:focus, .field select:focus{
+      border-color: rgba(31,101,164,.45);
+      box-shadow: 0 0 0 4px rgba(31,101,164,.10);
+    }
+    .field input[readonly]{ background: #f8fafc; color: #111827; }
+
+    .field input.user-input, .field select.user-input{
+      background: rgba(31,101,164,.06);
+      border-color: rgba(31,101,164,.25);
+    }
+    .field input.user-input:focus, .field select.user-input:focus{
+      background:#fff;
+    }
+    .hint{ font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.25; }
+    .span-12{ grid-column: span 12; }
+    .span-6{ grid-column: span 6; }
+    .span-4{ grid-column: span 4; }
+    .span-3{ grid-column: span 3; }
+
+    .phoneRow{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .phoneRow select{ width: 46%; }
+    .phonePrefix{
+      padding: 10px 10px;
+      border:1px solid rgba(229,231,235,.95);
+      border-radius: 12px;
+      background:#fff;
+      font-weight: 900;
+      color: var(--accentDark);
+      min-width: 44px;
+      text-align:center;
+    }
+
+    details{
+      border:1px dashed rgba(229,231,235,.95);
+      border-radius: 14px;
+      padding: 10px 10px 8px;
+      background: rgba(255,255,255,.9);
+    }
+    details summary{
+      cursor:pointer;
+      font-weight:900;
+      color: var(--muted);
+      user-select:none;
+      list-style: none;
+    }
+    details summary::-webkit-details-marker{ display:none; }
+    details summary:before{
+      content:"▸";
+      display:inline-block;
+      margin-right: 8px;
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    details[open] summary:before{ content:"▾"; }
+
+    .bigbox{
+      border: 2px solid rgba(17,24,39,.92);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,.92);
+    }
+    .bigbox .row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      font-size: 14px;
+      padding: 4px 0;
+    }
+    .bigbox .total{
+      margin-top: 8px;
+      font-size: 20px;
+      font-weight: 900;
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:12px;
+      color: var(--accentDark);
+    }
+
+    .summary{
+      border: 2px solid rgba(17,24,39,.92);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,.92);
+    }
+    .summary .line{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding: 4px 0;
+      font-size: 14px;
+    }
+    .summary .line strong{ font-weight: 900; }
+    .summary .grand{
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(229,231,235,.95);
+      font-size: 20px;
+      font-weight: 900;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color: var(--accentDark);
+    }
+    .subUF{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    .semaforo{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(229,231,235,.95);
+      background: rgba(255,255,255,.95);
+    }
+    .semaforo .state{
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(229,231,235,.95);
+    }
+    .state.ok{ color: var(--ok); border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.08); }
+    .state.bad{ color: var(--bad); border-color: rgba(220,38,38,.25); background: rgba(220,38,38,.08); }
+
+    footer{ margin-top: 14px; font-size: 11px; color:var(--muted); line-height: 1.35; }
+
+    /* Modo Cliente */
+    body.mode-client .advisor-only{ display:none !important; }
+    body.mode-client details{ display:none !important; }
+    body.locked-client .segmented{ display:none !important; }
+    body.locked-client #btnModeClient, body.locked-client #btnModeAdvisor{ display:none !important; }
+
+    /* PDF premium */
+    #pdfSheet{ display:none; }
+    body.printing #pdfSheet{ display:block; }
+    body.printing #app{ display:none; }
+
+    @media (max-width: 860px){
+      .span-3{ grid-column: span 6; }
+      .span-4{ grid-column: span 6; }
+      header{ align-items:flex-start; }
+      .topline{ justify-content:flex-start; }
+      .phoneRow select{ width: 52%; }
+    }
+    @media (max-width: 520px){
+      .span-6{ grid-column: span 12; }
+      .span-4{ grid-column: span 12; }
+      .span-3{ grid-column: span 12; }
+      .brand{ min-width: auto; }
+      .phoneRow{ flex-wrap:wrap; }
+      .phoneRow select{ width: 100%; }
+      .phonePrefix{ width: 60px; }
+    }
+
+    @page { size: A4; margin: 10mm; }
+    @media print{
+      body{ background:#fff; }
+      .page{ margin:0; max-width:none; padding:0; }
+      .card{ border:none; border-radius:0; box-shadow:none; backdrop-filter:none; background:#fff; padding: 10px; }
+      .btnrow, .topline, .segmented, .no-print{ display:none !important; }
+      #pdfSheet{ display:block !important; }
+      #app{ display:none !important; }
+      #pdfSheet{ page-break-inside: avoid; }
+      #pdfSheet .summary, #pdfSheet .bigbox{ padding: 10px; }
+      #pdfSheet .summary .line{ padding: 3px 0; font-size: 12px; }
+      #pdfSheet .bigbox .row{ padding: 3px 0; font-size: 12px; }
+      #pdfSheet .bigbox .total, #pdfSheet .summary .grand{ font-size: 16px; }
+    }
+  </style>
+</head>
+
+<body class="mode-client">
+  <div class="page">
+    <div class="card" id="app">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-label="Logo Ferran Propiedades">
+            <img src="assets/logo.jpg" alt="Ferran Propiedades" style="width:100%;height:100%;object-fit:contain;" / id="brandLogo">
+          </div>
+          <div class="titlewrap">
+            <h1>Simulador Hipotecario Pro</h1>
+            <div class="sub">FERRAN PROPIEDADES · simple, claro y profesional</div>
+          </div>
+        </div>
+
+        <div class="topline">
+          <div class="segmented" role="group" aria-label="Modo">
+            <button type="button" id="btnModeClient" class="active">Modo Cliente</button>
+            <button type="button" id="btnModeAdvisor">Modo Asesor</button>
+          </div>
+</div>
+      </header>
+
+      <div class="btnrow no-print" style="margin: 0 2px 12px;">
+        <button type="button" class="primary" id="btnRecalc">Recalcular</button>
+        <button type="button" id="btnReset">Limpiar</button>
+        <button type="button" class="ghost" id="btnUf">Actualizar UF</button>
+        <button type="button" class="primary" id="btnPdfPremium">Generar PDF premium (A4)</button>
+        <button type="button" id="btnWhats">WhatsApp</button>
+        <button type="button" id="btnMail">Email</button>
+      </div>
+
+      <form id="simForm" class="grid" autocomplete="on">
+        <section class="section" aria-label="01 Cliente">
+          <h2>01. Cliente</h2>
+          <div class="formgrid">
+            <div class="field span-6">
+              <label for="nombre">Nombre completo</label>
+              <input class="user-input" id="nombre" type="text" placeholder="Nombre Apellido" />
+            </div>
+
+            <div class="field span-3">
+              <label for="rut">RUT <span class="tag" id="rutTag">—</span></label>
+              <input class="user-input" id="rut" type="text" placeholder="12.345.678-9" />
+            </div>
+
+            <div class="field span-3">
+              <label>Teléfono</label>
+              <div class="phoneRow">
+                <select class="user-input" id="phoneCountry">
+                  <option value="CL" selected>Chile (+56)</option>
+                  <option value="AR">Argentina (+54)</option>
+                  <option value="PE">Perú (+51)</option>
+                  <option value="CO">Colombia (+57)</option>
+                  <option value="ES">España (+34)</option>
+                  <option value="US">USA (+1)</option>
+                </select>
+                <span class="phonePrefix" id="phonePrefix">9</span>
+                <input class="user-input" id="telLocal" type="text" inputmode="numeric" placeholder="1234 5678" />
+              </div>
+            </div>
+
+            <div class="field span-6">
+              <label for="email">Email</label>
+              <input class="user-input" id="email" type="email" placeholder="cliente@email.com" />
+            </div>
+
+            <div class="field span-6">
+              <label for="profesion">Profesión / Actividad</label>
+              <select id="profesion" class="user-input">
+  <option value="" selected>Selecciona actividad</option>
+  <option>Dependiente</option>
+  <option>Independiente</option>
+  <option>Honorarios</option>
+  <option>Profesional</option>
+  <option>Técnico</option>
+  <option>Empresario / Comerciante</option>
+  <option>Pensionado / Jubilado</option>
+  <option>Rentista</option>
+  <option>Estudiante</option>
+  <option>Dueña/o de casa</option>
+  <option>Cesante</option>
+  <option>Otro</option>
+</select>
+            </div>
+          </div>
+        </section>
+
+                <section class="section" aria-label="02 Datos de la propiedad">
+          <h2>02. Datos de la propiedad
+            <span class="pill">UF hoy: <strong id="outUfTitle">—</strong></span>
+          </h2>
+
+          <div class="formgrid">
+            <div class="field span-3">
+              <label for="uf">Valor UF ($) <span class="tag" id="ufDate">manual</span></label>
+              <input id="uf" class="user-input" type="text" data-uf="1" value="39.790,63" />
+            </div>
+
+            <div class="field span-3">
+              <label for="rol">Rol propiedad</label>
+              <input id="rol" class="user-input" type="text" placeholder="Ej: 158-392" />
+            </div>
+
+            <div class="field span-3">
+              <label for="sup">Superficie (m²) <span class="tag" id="dfl2Tag">DFL2 auto</span></label>
+              <input id="sup" class="user-input" type="text" inputmode="numeric" value="95" />
+            </div>
+
+            <div class="field span-3">
+              <label for="valorUF">Valor venta (UF)</label>
+              <input id="valorUF" class="user-input" type="text" data-uf="1" value="3.141,44" />
+            </div>
+
+            <div class="field span-6">
+              <label for="valorCLP">Valor venta ($)</label>
+              <input id="valorCLP" class="user-input" type="text" data-clp="1" value="" />
+            </div>
+
+            <div class="field span-3">
+              <label for="antiguedad">Antigüedad (años)</label>
+              <input id="antiguedad" class="user-input" type="text" inputmode="numeric" value="0" />
+            </div>
+
+            <div class="field span-3">
+              <label for="contribuciones">Contribuciones ($ trimestral)</label>
+              <input id="contribuciones" class="user-input" type="text" data-clp="1" value="0" />
+            </div>
+
+            <div class="field span-6">
+              <label for="direccion">Dirección</label>
+              <input id="direccion" class="user-input" type="text" placeholder="Calle / número / depto" />
+            </div>
+
+            <div class="field span-3">
+              <label for="region">Región</label>
+              <select id="region" class="user-input">
+                <option value="" selected>Selecciona</option>
+                <option>Arica y Parinacota</option>
+                <option>Tarapacá</option>
+                <option>Antofagasta</option>
+                <option>Atacama</option>
+                <option>Coquimbo</option>
+                <option>Valparaíso</option>
+                <option>Metropolitana de Santiago</option>
+                <option>O'Higgins</option>
+                <option>Maule</option>
+                <option>Ñuble</option>
+                <option>Biobío</option>
+                <option>La Araucanía</option>
+                <option>Los Ríos</option>
+                <option>Los Lagos</option>
+                <option>Aysén</option>
+                <option>Magallanes</option>
+              </select>
+            </div>
+
+            <div class="field span-3">
+              <label for="comuna">Comuna</label>
+              <input id="comuna" class="user-input" list="listaComunas" type="text" placeholder="Escribe o elige" />
+            </div>
+
+            <div class="field span-3">
+              <label for="ciudad">Ciudad</label>
+              <input id="ciudad" class="user-input" list="listaCiudades" type="text" placeholder="Escribe o elige" />
+            </div>
+          </div>
+
+          <datalist id="listaComunas">
+            <option>Temuco</option><option>Padre Las Casas</option><option>Villarrica</option><option>Pucón</option>
+            <option>Valdivia</option><option>Puerto Varas</option><option>Puerto Montt</option><option>Osorno</option>
+            <option>Santiago</option><option>Providencia</option><option>Las Condes</option><option>Ñuñoa</option><option>Vitacura</option>
+            <option>Concepción</option><option>San Pedro de la Paz</option><option>Chillán</option><option>La Serena</option><option>Coquimbo</option>
+            <option>Viña del Mar</option><option>Valparaíso</option>
+          </datalist>
+          <datalist id="listaCiudades">
+            <option>Temuco</option><option>Valdivia</option><option>Puerto Montt</option><option>Puerto Varas</option><option>Osorno</option>
+            <option>Santiago</option><option>Concepción</option><option>Chillán</option><option>La Serena</option><option>Viña del Mar</option>
+          </datalist>
+        </section>
+
+        <section class="section" aria-label="03 Gastos Operacionales">
+          <h2>
+            03. Gastos Operacionales
+            <span class="pill">Total: <strong><span id="outGoUF">—</span> UF</strong> · <strong id="outGoCLP">$—</strong></span>
+          </h2>
+
+          <div class="formgrid advisor-only">
+            <div class="field span-3">
+              <label for="notariaUF">Notaría (UF)</label>
+              <input id="notariaUF" type="text" data-uf="1" value="3,50" />
+            </div>
+            <div class="field span-3">
+              <label for="conservUF">Conservador (UF)</label>
+              <input id="conservUF" type="text" data-uf="1" value="6,00" />
+            </div>
+            <div class="field span-3">
+              <label for="tasacionUF">Tasación (UF)</label>
+              <input id="tasacionUF" type="text" data-uf="1" value="2,50" />
+            </div>
+            <div class="field span-3">
+              <label for="estudioUF">Estudio de títulos (UF)</label>
+              <input id="estudioUF" type="text" data-uf="1" value="4,00" />
+            </div>
+            <div class="field span-3">
+              <label for="escrituraUF">Escritura (UF)</label>
+              <input id="escrituraUF" type="text" data-uf="1" value="3,00" />
+            </div>
+
+            <div class="field span-3">
+              <label for="impMutuoPct">Imp. mutuo (%)</label>
+              <input id="impMutuoPct" type="text" inputmode="decimal" value="0,20" />
+            </div>
+            <div class="field span-3">
+              <label for="chkDFL2">DFL-2 (auto por m²)</label>
+              <select id="chkDFL2" disabled>
+                <option value="1" selected>SI (0,2%)</option>
+                <option value="0">NO (0,8% típico)</option>
+              </select>
+            </div>
+            <div class="field span-3">
+              <label>Imp. mutuo ($)</label>
+              <input id="outImpMutuoCLP" type="text" readonly value="—" />
+            </div>
+            <div class="field span-3">
+              <label>Nota</label>
+              <input type="text" readonly value="Auto: <140m² 0,2% / ≥140m² 0,8%" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-label="04 Honorarios Corretaje">
+          <h2>04. Honorarios de corretaje</h2>
+
+          <div class="hint">Referencia: 2% + IVA (editable en Modo Asesor)</div>
+
+          <div class="formgrid">
+<div class="field span-4 advisor-only">
+              <label for="corPct">Comisión (%)</label>
+              <input id="corPct" type="text" inputmode="decimal" value="2,0" />
+            </div>
+<div class="field span-4">
+              <label>Total corretaje</label>
+              <input id="outCorTotal" type="text" readonly value="—" />
+            </div>
+
+            <div class="field span-4 advisor-only">
+              <label>IVA (19%)</label>
+              <input id="outCorIva" type="text" readonly value="—" />
+            </div>
+
+            <div class="field span-4 advisor-only">
+              <label class="muted">Referencia</label>
+              <input type="text" readonly value="2% + IVA (editable)" />
+            </div>
+
+            <div class="span-12 advisor-only">
+              <details>
+                <summary>Ver desglose (Neto + IVA)</summary>
+                <div class="formgrid" style="margin-top:10px;">
+                  <div class="field span-4">
+                    <label>Neto</label>
+                    <input id="outCorNeto" type="text" readonly value="—" />
+                  </div>
+                  <div class="field span-4">
+                    <label>IVA</label>
+                    <input id="outCorIva2" type="text" readonly value="—" />
+                  </div>
+                  <div class="field span-4">
+                    <label>Total</label>
+                    <input id="outCorTotal2" type="text" readonly value="—" />
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-label="05 Financiamiento">
+          <h2>05. Financiamiento
+            <span class="pill">Crédito solicitado: <strong id="outCreditoUF">—</strong> UF</span>
+          </h2>
+
+          <div class="formgrid">
+            <div class="field span-3">
+              <label for="piePct">Pie inicial (%)</label>
+              <input id="piePct" class="user-input" type="text" inputmode="decimal" value="20" />
+            </div>
+
+            <div class="field span-3">
+              <label>Pie (Ahorro)</label>
+              <input id="outPieCLP" type="text" readonly value="—" />
+              <div class="hint" id="outPieUFHint">—</div>
+            </div>
+
+            <div class="field span-3">
+              <label>Crédito solicitado ($)</label>
+              <input id="outCreditoCLP" type="text" readonly value="—" />
+            </div>
+
+            <div class="field span-3">
+              <label>Crédito solicitado (UF)</label>
+
+              <input id="outCreditoUF2" type="text" readonly value="—" />
+            </div>
+            <div class="field span-3">
+              <label for="plazoAnios">Plazo (años)</label>
+              <input class="user-input" id="plazoAnios" type="text" inputmode="numeric" value="25" />
+            </div>
+            <div class="field span-3">
+              <label for="tasaAnual">Tasa (%)</label>
+              <input class="user-input" id="tasaAnual" type="text" inputmode="decimal" value="4,50" />
+            </div>
+            <div class="field span-3">
+              <label for="segurosUF">Seguros (Desg/Inc) UF</label>
+              <input class="user-input" id="segurosUF" type="text" data-uf="1" value="1,29" />
+            </div>
+
+            <div class="field span-4">
+              <label>Dividendo estimado (UF)</label>
+              <input id="outDivUF" type="text" readonly value="—" />
+            </div>
+            <div class="field span-4">
+              <label>Dividendo total (UF)</label>
+              <input id="outDivTotalUF" type="text" readonly value="—" />
+            </div>
+            <div class="field span-4">
+              <label>Dividendo total ($)</label>
+              <input id="outDivTotalCLP" type="text" readonly value="—" />
+            </div>
+
+            <div class="field span-4">
+              <label>Renta sugerida (25%)</label>
+              <input id="outRentaSug" type="text" readonly value="—" />
+            </div>
+            <div class="field span-4">
+              <label for="rentaCliente">Renta líquida cliente ($)</label>
+              <input class="user-input" id="rentaCliente" type="text" data-clp="1" value="0" />
+            </div>
+            <div class="field span-4" id="wrapRentaComp" style="display:none;">
+              <label for="rentaComp">Renta complementaria ($)</label>
+              <input class="user-input" id="rentaComp" type="text" data-clp="1" value="0" />
+            </div>
+
+            <div class="field span-4">
+              <label>Semáforo</label>
+              <div class="semaforo" style="height:46px;">
+                <span class="muted" id="outCalificaTxt">Califica</span>
+                <span class="state bad" id="outCalifica">NO</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bigbox" style="margin-top:12px;">
+            <div class="row"><span>Dividendo estimado:</span> <strong id="outDivEstimUF">— UF</strong></div>
+            <div class="row"><span>+ Seguros (UF):</span> <strong id="outSegurosUF">— UF</strong></div>
+            <div class="total"><span>DIVIDENDO TOTAL:</span> <span id="outDivTotalCLP2">$—</span></div>
+          </div>
+
+          <div class="summary" style="margin-top:12px;">
+            <div class="line"><span>Pie (Ahorro)</span><strong id="outResPie">$—</strong></div>
+            <div class="line"><span>Gastos Operacionales</span><strong id="outResGO">$—</strong></div>
+            <div class="line"><span>Sub total</span><strong id="outResSub">$—</strong></div>
+            <div class="line"><span>Honorarios corretaje</span><strong id="outResCor">$—</strong></div>
+            <div class="grand">
+              <span>Inversión inicial estimada</span>
+              <span>
+                <span id="outResTotal">$—</span>
+                <span class="subUF" id="outResTotalUF">— UF</span>
+              </span>
+            </div>
+          </div>
+
+          <footer>
+            Simulación referencial Ferran Propiedades. La UF puede variar según fecha. La evaluación es informativa y no constituye aprobación de crédito.
+          </footer>
+        </section>
+      </form>
+    </div>
+
+    <div class="card" id="pdfSheet">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="logo" style="width:62px;height:62px;">
+          <img src="assets/logo.jpg" alt="Ferran Propiedades" style="width:100%;height:100%;object-fit:contain;" />
+        </div>
+        <div>
+          <div style="font-size:18px;font-weight:900;color:var(--accentDark);">Simulador Hipotecario Pro</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">FERRAN PROPIEDADES · Reporte para cliente (A4)</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;display:grid;gap:10px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="summary">
+            <div class="line"><span>Cliente</span><strong id="pdfCliente">—</strong></div>
+            <div class="line"><span>RUT</span><strong id="pdfRut">—</strong></div>
+            <div class="line"><span>Teléfono</span><strong id="pdfTel">—</strong></div>
+            <div class="line"><span>Profesión</span><strong id="pdfProf">—</strong></div>
+            <div class="line"><span>UF usada</span><strong id="pdfUf">—</strong></div>
+          </div>
+
+          <div class="summary">
+            <div class="line"><span>Superficie</span><strong id="pdfSup">—</strong></div>
+            <div class="line"><span>Propiedad</span><strong id="pdfValorUF">—</strong></div>
+            <div class="line"><span>Propiedad ($)</span><strong id="pdfValorCLP">—</strong></div>
+            <div class="line"><span>Pie</span><strong id="pdfPie">—</strong></div>
+            <div class="line"><span>Crédito solicitado</span><strong id="pdfCreditoUF">—</strong></div>
+          </div>
+        </div>
+
+        <div class="bigbox">
+          <div class="row"><span>Dividendo estimado (UF)</span><strong id="pdfDivEstUF">—</strong></div>
+          <div class="row"><span>Seguros (UF)</span><strong id="pdfSegUF">—</strong></div>
+          <div class="row"><span>Dividendo total</span><strong id="pdfDivTotal">—</strong></div>
+          <div class="row"><span>Renta sugerida</span><strong id="pdfRentaSug">—</strong></div>
+          <div class="row"><span>Renta (cliente + comp.)</span><strong id="pdfRentaTot">—</strong></div>
+          <div class="total"><span>Semáforo</span><span id="pdfCalifica">—</span></div>
+        </div>
+
+        <div class="summary">
+          <div class="line"><span>Pie (Ahorro)</span><strong id="pdfResPie">—</strong></div>
+          <div class="line"><span>Gastos Operacionales</span><strong id="pdfResGO">—</strong></div>
+          <div class="line"><span>Honorarios corretaje</span><strong id="pdfResCor">—</strong></div>
+          <div class="grand"><span>Inversión inicial estimada</span><span id="pdfResTotal">—</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">(Incluye Pie + Gastos + Corretaje)</div>
+        </div>
+
+        <div style="font-size:10px;color:var(--muted);line-height:1.25;">
+          Documento generado automáticamente por Ferran Propiedades. La UF y condiciones pueden variar según banco y fecha.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const IVA = 0.19;
+  const STORAGE_KEY = "simPro_premium_v3";
+  // URL params (modo blindado):
+  // - Sin parámetros: Modo Cliente fijo (no muestra Modo Asesor)
+  // - Cliente:        ?client=1   (igual, Modo Cliente fijo)
+  // - Asesor:         ?advisor=1&key=FERRANPRO2026
+  const qs = new URLSearchParams(window.location.search);
+  const SECRET_KEY = "FERRANPRO2026";
+  const HAS_KEY = (qs.get("key") || "") === SECRET_KEY;
+  const STORED_UNLOCK = (sessionStorage.getItem("advisor_unlocked") === "1");
+  const UNLOCKED = HAS_KEY || STORED_UNLOCK;
+  const LOCK_CLIENT = !UNLOCKED; // por defecto, bloqueado para cliente
+  const FORCE_ADVISOR = (qs.get("advisor") === "1") && HAS_KEY;
+const $ = (id) => document.getElementById(id);
+
+  const fmtCLP = (n) => new Intl.NumberFormat('es-CL', { style:'currency', currency:'CLP', maximumFractionDigits:0 }).format(isFinite(n)? n : 0);
+  const fmtMiles = (n) => new Intl.NumberFormat('es-CL', { maximumFractionDigits:0 }).format(isFinite(n)? n : 0);
+  const fmtUF = (n) => new Intl.NumberFormat('es-CL', { minimumFractionDigits:2, maximumFractionDigits:2 }).format(isFinite(n)? n : 0);
+
+  function parseUFText(s){
+    s = (s ?? "").toString().trim();
+    if(!s) return 0;
+    s = s.replace(/\s/g,"");
+    s = s.replace(/\./g,"");
+    s = s.replace(",", ".");
+    const n = Number(s);
+    return isFinite(n) ? n : 0;
+  }
+  function parseCLPText(s){
+    s = (s ?? "").toString();
+    const digits = s.replace(/[^\d]/g,"");
+    const n = Number(digits);
+    return isFinite(n) ? n : 0;
+  }
+  function parsePctText(s){
+    s = (s ?? "").toString().trim().replace(/\s/g,"");
+    s = s.replace(",", ".");
+    const n = Number(s);
+    return isFinite(n) ? n : 0;
+  }
+  function setUFInput(el, n){ el.value = fmtUF(n); }
+  function setCLPInput(el, n){ el.value = fmtMiles(n); }
+
+  // RUT
+  function cleanRut(s){ return (s || "").toString().toUpperCase().replace(/[^0-9K]/g, ""); }
+  function formatRut(s){
+    const c = cleanRut(s);
+    if(c.length <= 1) return c;
+    const dv = c.slice(-1);
+    let body = c.slice(0,-1);
+    let out = "";
+    while(body.length > 3){ out = "." + body.slice(-3) + out; body = body.slice(0,-3); }
+    out = body + out;
+    return out + "-" + dv;
+  }
+  function validateRut(s){
+    const c = cleanRut(s);
+    if(c.length < 2) return null;
+    const dv = c.slice(-1);
+    const body = c.slice(0,-1);
+    if(!/^\d+$/.test(body)) return false;
+    let sum = 0, mul = 2;
+    for(let i = body.length - 1; i >= 0; i--){
+      sum += parseInt(body[i],10) * mul;
+      mul = (mul === 7) ? 2 : (mul + 1);
+    }
+    const mod = 11 - (sum % 11);
+    let dvCalc = "";
+    if(mod === 11) dvCalc = "0";
+    else if(mod === 10) dvCalc = "K";
+    else dvCalc = String(mod);
+    return dvCalc === dv;
+  }
+  function updateRutUI(){
+    const tag = $('rutTag');
+    const v = validateRut($('rut').value);
+    if(v === null){ tag.textContent = "—"; tag.className = "tag"; }
+    else if(v === true){ tag.textContent = "OK"; tag.className = "tag ok"; }
+    else{ tag.textContent = "INVÁLIDO"; tag.className = "tag bad"; }
+  }
+
+  // Teléfono
+  const COUNTRY = {
+    CL: { code:"+56", mobilePrefix:"9" },
+    AR: { code:"+54", mobilePrefix:"" },
+    PE: { code:"+51", mobilePrefix:"" },
+    CO: { code:"+57", mobilePrefix:"" },
+    ES: { code:"+34", mobilePrefix:"" },
+    US: { code:"+1",  mobilePrefix:"" }
+  };
+  function updatePhoneUI(){
+    const c = $('phoneCountry').value;
+    const pref = COUNTRY[c]?.mobilePrefix ?? "";
+    $('phonePrefix').textContent = pref || "—";
+    $('phonePrefix').style.display = (c === "CL") ? "inline-block" : "none";
+    $('telLocal').placeholder = (c === "CL") ? "1234 5678" : "número";
+  }
+  function getPhoneFull(){
+    const c = $('phoneCountry').value;
+    const code = COUNTRY[c]?.code ?? "";
+    const pref = COUNTRY[c]?.mobilePrefix ?? "";
+    const local = ($('telLocal').value || "").replace(/[^\d]/g,"");
+    if(!local) return "";
+    if(c === "CL"){ return `${code} ${pref} ${local}`.trim(); }
+    return `${code} ${local}`.trim();
+  }
+
+  // Hipotecario
+  function calcPaymentUF(principalUF, tasaAnualPct, plazoAnios){
+    const n = Math.max(1, Math.round(plazoAnios * 12));
+    const r = Math.max(0, (tasaAnualPct/100) / 12);
+    if(r === 0) return principalUF / n;
+    return principalUF * (r / (1 - Math.pow(1 + r, -n)));
+  }
+
+  // Modo
+  function setMode(mode){
+    document.body.classList.toggle("mode-client", mode === "client");
+    $('btnModeClient').classList.toggle("active", mode === "client");
+    $('btnModeAdvisor').classList.toggle("active", mode === "advisor");
+    localStorage.setItem(STORAGE_KEY + "_mode", mode);
+  }
+
+  // Persistencia
+  function saveState(){
+    const ids = [
+      'nombre','rut','email','profesion',
+      'phoneCountry','telLocal',
+      'uf','rol','sup','valorUF','valorCLP','antiguedad','contribuciones','direccion','region','comuna','ciudad','piePct',
+      'notariaUF','conservUF','tasacionUF','estudioUF','escrituraUF','impMutuoPct',
+      'corMode','corPct','corNeto',
+      'plazoAnios','tasaAnual','segurosUF','rentaCliente','rentaComp'
+    ];
+    const state = {};
+    for(const id of ids){
+      const el = $(id);
+      if(!el) continue;
+      state[id] = el.value;
+    }
+    state.ufDate = $('ufDate').textContent;
+    state.lastPropEdit = window._lastPropEdit || "UF";
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const state = JSON.parse(raw);
+      for(const [id,val] of Object.entries(state)){
+        const el = $(id);
+        if(el && typeof val !== "undefined") el.value = val;
+      }
+      if(state.ufDate) $('ufDate').textContent = state.ufDate;
+      window._lastPropEdit = state.lastPropEdit || "UF";
+    }catch(e){}
+  }
+  function clearState(){
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY + "_mode");
+  }
+
+  // UF API
+  async function updateUf(){
+    try{
+      $('ufDate').textContent = "cargando...";
+      const res = await fetch("https://mindicador.cl/api/uf");
+      if(!res.ok) throw new Error("UF fetch failed");
+      const data = await res.json();
+      const item = (data && data.serie && data.serie.length) ? data.serie[0] : null;
+      if(!item) throw new Error("UF not found");
+      const ufValue = Number(item.valor);
+      if(!isFinite(ufValue) || ufValue <= 0) throw new Error("UF invalid");
+      setUFInput($('uf'), ufValue);
+      const d = new Date(item.fecha);
+      $('ufDate').textContent = "act: " + d.toLocaleDateString('es-CL');
+      recalc();
+      saveState();
+    }catch(e){
+      $('ufDate').textContent = "manual";
+      alert("No pude actualizar la UF automáticamente. Puedes escribirla manualmente.");
+    }
+  }
+
+  function initInputMasks(){
+    document.querySelectorAll('input[data-clp="1"]').forEach((el) => {
+      el.addEventListener("focus", () => { el.value = String(parseCLPText(el.value) || 0); el.select?.(); });
+      el.addEventListener("blur", () => { setCLPInput(el, parseCLPText(el.value)); });
+      setCLPInput(el, parseCLPText(el.value));
+    });
+    document.querySelectorAll('input[data-uf="1"]').forEach((el) => {
+      el.addEventListener("focus", () => {
+        const n = parseUFText(el.value);
+        el.value = (isFinite(n) ? n.toFixed(2) : "0.00").replace(".", ",");
+        el.select?.();
+      });
+      el.addEventListener("blur", () => { setUFInput(el, parseUFText(el.value)); });
+      setUFInput(el, parseUFText(el.value));
+    });
+  }
+
+  // DFL2 auto por m²
+  function updateDFL2BySurface(){
+    const sup = parseCLPText($('sup').value);
+    const isDfl2 = sup > 0 && sup < 140;
+    $('chkDFL2').value = isDfl2 ? "1" : "0";
+    $('dfl2Tag').textContent = isDfl2 ? "DFL2: SI" : "DFL2: NO";
+    $('impMutuoPct').value = isDfl2 ? "0,20" : "0,80";
+  }
+
+  function recalc(){
+    const uf = Math.max(1, parseUFText($('uf').value));
+    if($('outUfTitle')) $('outUfTitle').textContent = fmtUF(uf);
+    updateDFL2BySurface();
+
+    window._lastPropEdit = window._lastPropEdit || "UF";
+    let valorPropUF = 0;
+    let valorPropCLP = 0;
+    if(window._lastPropEdit === "CLP"){
+      valorPropCLP = parseCLPText($('valorCLP').value);
+      valorPropUF = valorPropCLP / uf;
+      setUFInput($('valorUF'), valorPropUF);
+    }else{
+      valorPropUF = parseUFText($('valorUF').value);
+      valorPropCLP = valorPropUF * uf;
+      setCLPInput($('valorCLP'), valorPropCLP);
+    }
+
+    const piePct = Math.min(100, Math.max(0, parsePctText($('piePct').value)));
+    const pieCLP = valorPropCLP * (piePct / 100);
+    const pieUF = pieCLP / uf;
+    $('outPieCLP').value = fmtCLP(pieCLP);
+    $('outPieUFHint').textContent = fmtUF(pieUF) + " UF";
+
+    const creditoUF = valorPropUF * (1 - piePct/100);
+    const creditoCLP = creditoUF * uf;
+    $('outCreditoUF').textContent = fmtUF(creditoUF);
+    $('outCreditoUF2').value = fmtUF(creditoUF);
+    if($('outCreditoCLP')) $('outCreditoCLP').value = fmtCLP(creditoCLP);
+
+    const totalGO_UF =
+      Math.max(0, parseUFText($('notariaUF').value)) +
+      Math.max(0, parseUFText($('conservUF').value)) +
+      Math.max(0, parseUFText($('tasacionUF').value)) +
+      Math.max(0, parseUFText($('estudioUF').value)) +
+      Math.max(0, parseUFText($('escrituraUF').value));
+
+    const impMutuoPct = Math.max(0, parsePctText($('impMutuoPct').value));
+    const impMutuoCLP = creditoCLP * (impMutuoPct / 100);
+    $('outImpMutuoCLP').value = fmtCLP(impMutuoCLP);
+
+    const totalGO_CLP = totalGO_UF * uf + impMutuoCLP;
+    $('outGoUF').textContent = fmtUF(totalGO_UF);
+    $('outGoCLP').textContent = fmtCLP(totalGO_CLP);
+
+    const mode = 'pct'; // Solo porcentaje
+    // Corretaje se calcula como % del valor de venta
+    let corNeto = 0;
+    const pct = Math.max(0, parsePctText($('corPct').value));
+    corNeto = valorPropCLP * (pct/100);
+
+const corIva = corNeto * IVA;
+    const corTotal = corNeto + corIva;
+    $('outCorTotal').value = fmtCLP(corTotal);
+    $('outCorIva').value = fmtCLP(corIva);
+    $('outCorNeto').value = fmtCLP(corNeto);
+    $('outCorIva2').value = fmtCLP(corIva);
+    $('outCorTotal2').value = fmtCLP(corTotal);
+
+    const plazo = Math.max(1, parseCLPText($('plazoAnios').value));
+    if($('outPlazoMeses')) $('outPlazoMeses').textContent = String(plazo*12);
+    const tasa = Math.max(0, parsePctText($('tasaAnual').value));
+    const segurosUF = Math.max(0, parseUFText($('segurosUF').value));
+
+    const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
+    const divTotalUF = divEstimUF + segurosUF;
+    const divTotalCLP = divTotalUF * uf;
+
+    $('outDivUF').value = fmtUF(divEstimUF);
+    $('outDivTotalUF').value = fmtUF(divTotalUF);
+    $('outDivTotalCLP').value = fmtCLP(divTotalCLP);
+    $('outDivTotalCLP2').textContent = fmtCLP(divTotalCLP);
+    $('outDivEstimUF').textContent = fmtUF(divEstimUF) + " UF";
+    $('outSegurosUF').textContent = fmtUF(segurosUF) + " UF";
+
+    const rentaSug = divTotalCLP / 0.25;
+    $('outRentaSug').value = fmtCLP(rentaSug);
+
+    const rentaCli = Math.max(0, parseCLPText($('rentaCliente').value));
+    setCLPInput($('rentaCliente'), rentaCli);
+    const rentaComp = Math.max(0, parseCLPText($('rentaComp').value));
+    setCLPInput($('rentaComp'), rentaComp);
+    const rentaTot = rentaCli + rentaComp;
+
+    const califica = (rentaTot >= rentaSug && rentaSug > 0);
+    $('wrapRentaComp').style.display = (!califica || rentaComp > 0) ? "block" : "none";
+
+    const badge = $('outCalifica');
+    badge.textContent = califica ? 'SI' : 'NO';
+    badge.classList.toggle('ok', califica);
+    badge.classList.toggle('bad', !califica);
+
+    if(califica && rentaComp > 0) $('outCalificaTxt').textContent = 'Califica (con renta complementaria)';
+    else if(califica) $('outCalificaTxt').textContent = 'Califica';
+    else $('outCalificaTxt').textContent = 'No califica (puedes agregar renta complementaria)';
+
+    const subTotal = pieCLP + totalGO_CLP;
+    const totalInv = subTotal + corTotal;
+    const totalInvUF = totalInv / uf;
+
+    $('outResPie').textContent = fmtCLP(pieCLP);
+    $('outResGO').textContent = fmtCLP(totalGO_CLP);
+    $('outResSub').textContent = fmtCLP(subTotal);
+    $('outResCor').textContent = fmtCLP(corTotal);
+    $('outResTotal').textContent = fmtCLP(totalInv);
+    $('outResTotalUF').textContent = fmtUF(totalInvUF) + " UF";
+
+    updateRutUI();
+    updatePhoneUI();
+  }
+
+  function fillPdf(){
+    const uf = Math.max(1, parseUFText($('uf').value));
+    const valorUF = parseUFText($('valorUF').value);
+    const valorCLP = parseCLPText($('valorCLP').value);
+    const piePct = parsePctText($('piePct').value);
+    const pieCLP = valorCLP * (piePct/100);
+    const sup = parseCLPText($('sup').value);
+    const tel = getPhoneFull() || "—";
+
+    $('pdfCliente').textContent = $('nombre').value || "—";
+    $('pdfRut').textContent = $('rut').value || "—";
+    $('pdfTel').textContent = tel;
+    $('pdfProf').textContent = $('profesion').value || "—";
+    $('pdfUf').textContent = fmtUF(uf) + " (" + ($('ufDate').textContent || "manual") + ")";
+
+    $('pdfSup').textContent = (sup ? (sup + " m²") : "—");
+    $('pdfValorUF').textContent = fmtUF(valorUF) + " UF";
+    $('pdfValorCLP').textContent = fmtCLP(valorCLP);
+    $('pdfPie').textContent = piePct.toFixed(1).replace(".", ",") + "% · " + fmtCLP(pieCLP);
+    $('pdfCreditoUF').textContent = $('outCreditoUF').textContent + " UF";
+
+    $('pdfDivEstUF').textContent = $('outDivUF').value + " UF";
+    $('pdfSegUF').textContent = $('segurosUF').value + " UF";
+    $('pdfDivTotal').textContent = $('outDivTotalUF').value + " UF · " + $('outDivTotalCLP').value;
+    $('pdfRentaSug').textContent = $('outRentaSug').value;
+
+    const rentaTot = parseCLPText($('rentaCliente').value) + parseCLPText($('rentaComp').value);
+    $('pdfRentaTot').textContent = fmtCLP(rentaTot);
+    $('pdfCalifica').textContent = $('outCalifica').textContent;
+
+    $('pdfResPie').textContent = $('outResPie').textContent;
+    $('pdfResGO').textContent = $('outResGO').textContent;
+    $('pdfResCor').textContent = $('outResCor').textContent;
+    $('pdfResTotal').textContent = $('outResTotal').textContent + " · " + $('outResTotalUF').textContent;
+  }
+
+  function printPremium(){
+    fillPdf();
+    document.body.classList.add("printing");
+    setTimeout(() => window.print(), 60);
+  }
+  window.addEventListener("afterprint", () => document.body.classList.remove("printing"));
+
+  function buildResumenText(){
+    const rentaTot = parseCLPText($('rentaCliente').value) + parseCLPText($('rentaComp').value);
+    return [
+      "Simulador Hipotecario Pro · FERRAN PROPIEDADES",
+      `Cliente: ${$('nombre').value || '(sin nombre)'}`,
+      `Crédito solicitado: ${$('outCreditoUF').textContent} UF`,
+      `Dividendo total: ${$('outDivTotalUF').value} UF (${ $('outDivTotalCLP').value })`,
+      `Renta sugerida: ${$('outRentaSug').value}`,
+      `Renta (cliente + comp.): ${fmtCLP(rentaTot)}`,
+      `Semáforo: ${$('outCalifica').textContent}`,
+      `Inversión inicial estimada: ${$('outResTotal').textContent} (${ $('outResTotalUF').textContent })`
+    ].join("\n");
+  }
+  async function copyResumen(){
+    const text = buildResumenText();
+    try{ await navigator.clipboard.writeText(text); }catch(e){}
+    return text;
+  }
+  async function sendWhats(){
+    const text = await copyResumen();
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+  }
+  async function sendMail(){
+    const text = await copyResumen();
+    const subject = "Simulador Hipotecario Pro · Crédito solicitado";
+    window.location.href = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(text);
+  }
+
+  document.addEventListener('input', (e) => {
+    if(!e.target || !e.target.closest('#simForm')) return;
+
+    if(e.target.id === "rut"){ e.target.value = formatRut(e.target.value); }
+    if(e.target.id === "valorUF"){ window._lastPropEdit = "UF"; }
+    if(e.target.id === "valorCLP"){ window._lastPropEdit = "CLP"; }
+
+    recalc();
+    saveState();
+  });
+
+  $('phoneCountry').addEventListener('change', () => { updatePhoneUI(); saveState(); });
+
+  $('btnRecalc').addEventListener('click', () => { recalc(); saveState(); });
+  $('btnReset').addEventListener('click', () => {
+    $('simForm').reset();
+    $('ufDate').textContent = "manual";
+    clearState();
+    initInputMasks();
+    updatePhoneUI();
+    recalc();
+  });
+
+  $('btnUf').addEventListener('click', updateUf);
+  $('btnPdfPremium').addEventListener('click', printPremium);
+  $('btnWhats').addEventListener('click', sendWhats);
+  $('btnMail').addEventListener('click', sendMail);
+
+  // Acceso Asesor (oculto):
+  // - iPhone/iPad: toca el LOGO 7 veces rápido para pedir la clave.
+  // - Teclado (si tienes): Cmd/Ctrl + Shift + A
+  (function setupHiddenAdvisorAccess(){
+    const logo = document.getElementById('brandLogo');
+
+    function requestKey(){
+      const key = prompt("Clave Asesor (solo uso interno):");
+      if(!key) return;
+      if(key === SECRET_KEY){
+        sessionStorage.setItem("advisor_unlocked", "1");
+        document.body.classList.remove("locked-client");
+        setMode("advisor");
+        alert("Modo Asesor habilitado.");
+      }else{
+        alert("Clave incorrecta.");
+      }
+    }
+
+    // iPhone/iPad + Desktop: mantener presionado 2 segundos sobre el logo
+    let pressTimer = null;
+    const HOLD_MS = 2000;
+
+    function startPress(){
+      if(pressTimer) clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => {
+        pressTimer = null;
+        requestKey();
+      }, HOLD_MS);
+    }
+    function cancelPress(){
+      if(pressTimer){
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    }
+
+    if(logo){
+      logo.style.cursor = "pointer";
+      // Touch (iOS)
+      logo.addEventListener("touchstart", (e) => { startPress(); }, {passive:true});
+      logo.addEventListener("touchend", cancelPress, {passive:true});
+      logo.addEventListener("touchcancel", cancelPress, {passive:true});
+      // Mouse (desktop)
+      logo.addEventListener("mousedown", startPress);
+      logo.addEventListener("mouseup", cancelPress);
+      logo.addEventListener("mouseleave", cancelPress);
+    }
+
+    // Teclado (si tienes): Cmd/Ctrl + Shift + A
+    window.addEventListener("keydown", (e) => {
+      const key = (e.key || "").toLowerCase();
+      const combo = (key === "a") && e.shiftKey && (e.ctrlKey || e.metaKey);
+      if(combo){
+        e.preventDefault();
+        requestKey();
+      }
+    });
+  })();// Acceso Asesor (botón): pide clave y desbloquea el switch
+  const unlockBtn = document.getElementById('btnUnlockAdvisor');
+  if(unlockBtn){
+    unlockBtn.addEventListener('click', () => {
+      const key = prompt("Clave Asesor (no se muestra al cliente):");
+      if(!key) return;
+      if(key === SECRET_KEY){
+        sessionStorage.setItem("advisor_unlocked", "1");
+        document.body.classList.remove("locked-client");
+        setMode("advisor");
+        alert("Modo Asesor habilitado.");
+      }else{
+        alert("Clave incorrecta.");
+      }
+    });
+  }
+
+
+  $('btnModeClient').addEventListener('click', () => { if(!LOCK_CLIENT) setMode("client"); });
+  $('btnModeAdvisor').addEventListener('click', () => { if(!LOCK_CLIENT) setMode("advisor"); });
+if('serviceWorker' in navigator){
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  }
+
+  // Init
+  loadState();
+  initInputMasks();
+  updatePhoneUI();
+  const savedMode = localStorage.getItem(STORAGE_KEY + "_mode") || "client";
+  if(LOCK_CLIENT){ document.body.classList.add("locked-client"); setMode("client"); }
+  else if(FORCE_ADVISOR){ document.body.classList.remove("locked-client"); setMode("advisor"); }
+  else { document.body.classList.remove("locked-client"); setMode(savedMode); }
+  $('rut').value = formatRut($('rut').value);
+  window._lastPropEdit = window._lastPropEdit || "UF";
+  recalc();
+</script>
+</body>
+</html>
