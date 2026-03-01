@@ -190,8 +190,12 @@
     .field input[readonly]{ background: #f8fafc; color: #111827; }
 
     .field input.user-input, .field select.user-input{
-      background: rgba(31,101,164,.06);
-      border-color: rgba(31,101,164,.25);
+      background: rgba(31,101,164,.14);
+      border-color: rgba(31,101,164,.45);
+      box-shadow: inset 0 0 0 9999px rgba(31,101,164,.02);
+    }
+    .field input.user-input:hover, .field select.user-input:hover{
+      border-color: rgba(31,101,164,.55);
     }
     .field input.user-input:focus, .field select.user-input:focus{
       background:#fff;
@@ -554,44 +558,52 @@
 
           <div class="formgrid advisor-only">
             <div class="field span-3">
-              <label for="notariaUF">Notaría (UF)</label>
-              <input id="notariaUF" type="text" data-uf="1" value="3,50" />
-            </div>
-            <div class="field span-3">
-              <label for="conservUF">Conservador (UF)</label>
-              <input id="conservUF" type="text" data-uf="1" value="6,00" />
-            </div>
-            <div class="field span-3">
               <label for="tasacionUF">Tasación (UF)</label>
-              <input id="tasacionUF" type="text" data-uf="1" value="2,50" />
-            </div>
-            <div class="field span-3">
-              <label for="estudioUF">Estudio de títulos (UF)</label>
-              <input id="estudioUF" type="text" data-uf="1" value="4,00" />
-            </div>
-            <div class="field span-3">
-              <label for="escrituraUF">Escritura (UF)</label>
-              <input id="escrituraUF" type="text" data-uf="1" value="3,00" />
+              <input id="tasacionUF" type="text" data-uf="1" value="3,50" />
+              <div class="hint">Rango ref.: 2,5 a 4,5 UF</div>
             </div>
 
             <div class="field span-3">
-              <label for="impMutuoPct">Imp. mutuo (%)</label>
-              <input id="impMutuoPct" type="text" inputmode="decimal" value="0,20" />
+              <label for="estudioUF">Estudio de títulos (UF)</label>
+              <input id="estudioUF" type="text" data-uf="1" value="5,00" />
+              <div class="hint">Rango ref.: 3 a 7 UF</div>
             </div>
+
+            <div class="field span-3">
+              <label for="escrituraUF">Redacción de escritura (UF)</label>
+              <input id="escrituraUF" type="text" data-uf="1" value="2,50" />
+              <div class="hint">Rango ref.: 2 a 4 UF</div>
+            </div>
+
+            <div class="field span-3">
+              <label for="notariaCLP">Gastos notariales ($)</label>
+              <input id="notariaCLP" type="text" data-clp="1" value="100000" />
+              <div class="hint">Rango ref.: $60.000 a $120.000</div>
+            </div>
+
+            <div class="field span-3">
+              <label>Inscripción CBR ($)</label>
+              <input id="outCbrCLP" type="text" readonly value="—" />
+              <div class="hint">0,2% del valor (tope aprox. $262.200 a $600.000)</div>
+            </div>
+
+            <div class="field span-3">
+              <label for="impMutuoPct">Impuesto timbres (%)</label>
+              <input id="impMutuoPct" type="text" inputmode="decimal" readonly value="0,20" />
+              <div class="hint">Auto por m²: &lt;140m² 0,2% / ≥140m² 0,8%</div>
+            </div>
+
+            <div class="field span-3">
+              <label>Impuesto timbres ($)</label>
+              <input id="outImpMutuoCLP" type="text" readonly value="—" />
+            </div>
+
             <div class="field span-3">
               <label for="chkDFL2">DFL-2 (auto por m²)</label>
               <select id="chkDFL2" disabled>
                 <option value="1" selected>SI (0,2%)</option>
                 <option value="0">NO (0,8% típico)</option>
               </select>
-            </div>
-            <div class="field span-3">
-              <label>Imp. mutuo ($)</label>
-              <input id="outImpMutuoCLP" type="text" readonly value="—" />
-            </div>
-            <div class="field span-3">
-              <label>Nota</label>
-              <input type="text" readonly value="Auto: <140m² 0,2% / ≥140m² 0,8%" />
             </div>
           </div>
         </section>
@@ -604,7 +616,7 @@
           <div class="formgrid">
 <div class="field span-4 advisor-only">
               <label for="corPct">Comisión (%)</label>
-              <input id="corPct" type="text" inputmode="decimal" value="2,0" />
+              <input id="corPct" class="user-input" type="text" inputmode="decimal" value="2,0" />
             </div>
 <div class="field span-4">
               <label>Total corretaje</label>
@@ -739,7 +751,7 @@
           </div>
 
           <footer>
-            Simulación referencial Ferran Propiedades. La UF puede variar según fecha. La evaluación es informativa y no constituye aprobación de crédito.
+            Simulación referencial Ferran Propiedades. No constituye aprobación de crédito ni oferta vinculante. Valores (UF, tasa, seguros y gastos) pueden variar según banco, fecha y antecedentes del cliente.
           </footer>
         </section>
       </form>
@@ -793,7 +805,7 @@
         </div>
 
         <div style="font-size:10px;color:var(--muted);line-height:1.25;">
-          Documento generado automáticamente por Ferran Propiedades. La UF y condiciones pueden variar según banco y fecha.
+          Documento generado automáticamente por Ferran Propiedades. Simulación referencial: valores pueden variar según banco y fecha.
         </div>
       </div>
     </div>
@@ -929,7 +941,7 @@ const $ = (id) => document.getElementById(id);
       'nombre','rut','email','profesion',
       'phoneCountry','telLocal',
       'uf','rol','sup','valorUF','valorCLP','antiguedad','contribuciones','direccion','region','comuna','ciudad','piePct',
-      'notariaUF','conservUF','tasacionUF','estudioUF','escrituraUF','impMutuoPct',
+      'tasacionUF','estudioUF','escrituraUF','notariaCLP','impMutuoPct',
       'corMode','corPct','corNeto',
       'plazoAnios','tasaAnual','segurosUF','rentaCliente','rentaComp'
     ];
@@ -1027,6 +1039,50 @@ const $ = (id) => document.getElementById(id);
       setCLPInput($('valorCLP'), valorPropCLP);
     }
 
+
+    // Si el valor de venta está en 0, no calculamos resultados (evita “resultados fantasma” al limpiar)
+    if(valorPropUF <= 0 || valorPropCLP <= 0){
+      // GO
+      $('outGoUF').textContent = fmtUF(0);
+      $('outGoCLP').textContent = fmtCLP(0);
+      if($('outCbrCLP')) $('outCbrCLP').value = fmtCLP(0);
+      $('outImpMutuoCLP').value = fmtCLP(0);
+
+      // Pie / Crédito
+      $('outPieCLP').value = fmtCLP(0);
+      $('outPieUFHint').textContent = fmtUF(0) + " UF";
+      $('outCreditoUF').textContent = fmtUF(0);
+      $('outCreditoUF2').value = fmtUF(0);
+      if($('outCreditoCLP')) $('outCreditoCLP').value = fmtCLP(0);
+
+      // Dividendos / renta / semáforo
+      $('outDivUF').value = fmtUF(0);
+      $('outDivTotalUF').value = fmtUF(0);
+      $('outDivTotalCLP').value = fmtCLP(0);
+      $('outDivTotalCLP2').textContent = fmtCLP(0);
+      $('outDivEstimUF').textContent = fmtUF(0) + " UF";
+      $('outSegurosUF').textContent = fmtUF(0) + " UF";
+      $('outRentaSug').value = fmtCLP(0);
+
+      $('wrapRentaComp').style.display = "none";
+      $('outCalificaTxt').textContent = "Completa el valor de venta para simular";
+      const badge = $('outCalifica');
+      badge.textContent = "—";
+      badge.classList.remove('ok','bad');
+
+      // Resumen
+      $('outResPie').textContent = fmtCLP(0);
+      $('outResGO').textContent = fmtCLP(0);
+      $('outResSub').textContent = fmtCLP(0);
+      $('outResCor').textContent = fmtCLP(0);
+      $('outResTotal').textContent = fmtCLP(0);
+      $('outResTotalUF').textContent = fmtUF(0) + " UF";
+
+      updateRutUI();
+      updatePhoneUI();
+      return;
+    }
+
     const piePct = Math.min(100, Math.max(0, parsePctText($('piePct').value)));
     const pieCLP = valorPropCLP * (piePct / 100);
     const pieUF = pieCLP / uf;
@@ -1039,22 +1095,34 @@ const $ = (id) => document.getElementById(id);
     $('outCreditoUF2').value = fmtUF(creditoUF);
     if($('outCreditoCLP')) $('outCreditoCLP').value = fmtCLP(creditoCLP);
 
-    const totalGO_UF =
-      Math.max(0, parseUFText($('notariaUF').value)) +
-      Math.max(0, parseUFText($('conservUF').value)) +
+    
+    // --- Gastos Operacionales (referencial Araucanía 2026) ---
+    const baseUF =
       Math.max(0, parseUFText($('tasacionUF').value)) +
       Math.max(0, parseUFText($('estudioUF').value)) +
       Math.max(0, parseUFText($('escrituraUF').value));
 
-    const impMutuoPct = Math.max(0, parsePctText($('impMutuoPct').value));
-    const impMutuoCLP = creditoCLP * (impMutuoPct / 100);
-    $('outImpMutuoCLP').value = fmtCLP(impMutuoCLP);
+    const notariaCLP = Math.max(0, parseCLPText($('notariaCLP').value));
+    setCLPInput($('notariaCLP'), notariaCLP);
 
-    const totalGO_CLP = totalGO_UF * uf + impMutuoCLP;
+    // Inscripción CBR: 0,2% del valor (min 262.200 / max 600.000 aprox)
+    let cbrCLP = valorPropCLP * 0.002;
+    cbrCLP = Math.max(262200, Math.min(600000, cbrCLP));
+    if(!isFinite(cbrCLP)) cbrCLP = 0;
+    if($('outCbrCLP')) $('outCbrCLP').value = fmtCLP(cbrCLP);
+
+    // Impuesto timbres (%): auto por m² (impMutuoPct ya viene seteado)
+    const timbresPct = Math.max(0, parsePctText($('impMutuoPct').value));
+    const timbresCLP = creditoCLP * (timbresPct / 100);
+    $('outImpMutuoCLP').value = fmtCLP(timbresCLP);
+
+    const totalGO_CLP = (baseUF * uf) + notariaCLP + cbrCLP + timbresCLP;
+    const totalGO_UF = totalGO_CLP / uf;
+
     $('outGoUF').textContent = fmtUF(totalGO_UF);
     $('outGoCLP').textContent = fmtCLP(totalGO_CLP);
 
-    const mode = 'pct'; // Solo porcentaje
+const mode = 'pct'; // Solo porcentaje
     // Corretaje se calcula como % del valor de venta
     let corNeto = 0;
     const pct = Math.max(0, parsePctText($('corPct').value));
@@ -1073,7 +1141,28 @@ const corIva = corNeto * IVA;
     const tasa = Math.max(0, parsePctText($('tasaAnual').value));
     const segurosUF = Math.max(0, parseUFText($('segurosUF').value));
 
-    const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
+    
+    // Si el crédito solicitado queda en 0 (por pie 100% u otros), no mostramos dividendos
+    if(creditoUF <= 0){
+      $('outDivUF').value = fmtUF(0);
+      $('outDivTotalUF').value = fmtUF(0);
+      $('outDivTotalCLP').value = fmtCLP(0);
+      $('outDivTotalCLP2').textContent = fmtCLP(0);
+      $('outDivEstimUF').textContent = fmtUF(0) + " UF";
+      $('outSegurosUF').textContent = fmtUF(0) + " UF";
+      $('outRentaSug').value = fmtCLP(0);
+      $('wrapRentaComp').style.display = "none";
+      $('outCalificaTxt').textContent = "Crédito solicitado: 0";
+      const badge = $('outCalifica');
+      badge.textContent = "—";
+      badge.classList.remove('ok','bad');
+      // Resumen sin cambios de corretaje/GO/pie
+      updateRutUI();
+      updatePhoneUI();
+      return;
+    }
+
+const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
     const divTotalUF = divEstimUF + segurosUF;
     const divTotalCLP = divTotalUF * uf;
 
@@ -1207,7 +1296,13 @@ const corIva = corNeto * IVA;
   $('btnRecalc').addEventListener('click', () => { recalc(); saveState(); });
   $('btnReset').addEventListener('click', () => {
     $('simForm').reset();
-    $('ufDate').textContent = "manual";
+    // Dejar “limpio” sin resultados
+    if($('valorUF')) $('valorUF').value = '0,00';
+    if($('valorCLP')) $('valorCLP').value = '0';
+    if($('sup')) $('sup').value = '0';
+    if($('rentaCliente')) $('rentaCliente').value = '0';
+    if($('rentaComp')) $('rentaComp').value = '0';
+    $('ufDate').textContent = 'manual';
     clearState();
     initInputMasks();
     updatePhoneUI();

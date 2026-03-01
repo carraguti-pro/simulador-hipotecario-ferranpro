@@ -1,5 +1,5 @@
 /* Simulador Hipotecario Pro - Service Worker (offline) */
-const CACHE_NAME = "simulador-pro-premium-v3";
+const CACHE_NAME = "simulador-pro-premium-v11";
 const ASSETS = [
   "./",
   "./index.html",
