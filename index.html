@@ -510,6 +510,39 @@
     .sheetBtns{ display:grid; gap:8px; margin-top: 10px; }
     .sheetBtns button{ width: 100%; padding: 12px; border-radius: 14px; font-size: 14px; }
     .sheetBtns .danger{ border-style:dashed; opacity:.85; }
+
+    /* GO modal table */
+    .goTable{
+      width:100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .goTable th, .goTable td{
+      border-top: 1px solid rgba(229,231,235,.95);
+      padding: 10px 10px;
+      text-align:left;
+      vertical-align: top;
+    }
+    .goTable th{
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      background: rgba(245,247,250,.8);
+    }
+    .goTag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(229,231,235,.95);
+      background: rgba(255,255,255,.8);
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .goTag strong{ color: var(--accentDark); }
 </style>
 </head>
 
@@ -696,7 +729,9 @@
           <h2>
             03. Gastos Operacionales
             <span class="pill">Total: <strong><span id="outGoUF">—</span> UF</strong> · <strong id="outGoCLP">$—</strong></span>
-          </h2>
+          
+            <button type="button" id="btnGoInfo" class="ghost" style="padding:7px 10px;border-radius:999px;font-size:12px;">Ver detalle</button>
+</h2>
 
           <div class="formgrid advisor-only">
             <div class="field span-3">
@@ -1706,6 +1741,27 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
 
   $('btnUf').addEventListener('click', updateUf);
   $('btnPdfPremium').addEventListener('click', printPremium);
+
+
+  // GO Modal
+  function openGoModal(){
+    try{
+      const uf = document.getElementById('outGoUF')?.textContent || "—";
+      const clp = document.getElementById('outGoCLP')?.textContent || "$—";
+      const muf = document.getElementById('goModalUF');
+      const mclp = document.getElementById('goModalCLP');
+      if(muf) muf.textContent = uf;
+      if(mclp) mclp.textContent = clp;
+    }catch(e){}
+    document.getElementById('goModal')?.classList.add('open');
+  }
+  function closeGoModal(){ document.getElementById('goModal')?.classList.remove('open'); }
+
+  document.getElementById('btnGoInfo')?.addEventListener('click', openGoModal);
+  document.getElementById('btnGoClose')?.addEventListener('click', closeGoModal);
+  document.getElementById('goModal')?.addEventListener('click', (e) => {
+    if(e.target && e.target.id === 'goModal') closeGoModal();
+  });
 
   // Cerrar reunión (menú)
   function openCloseSheet(){ document.getElementById('closeSheet')?.classList.add('open'); }
