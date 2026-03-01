@@ -734,6 +734,18 @@
 </h2>
 
           <div class="formgrid advisor-only">
+                        <div class="field span-6 advisor-only">
+              <label>Perfil GO</label>
+              <input type="hidden" id="goPreset" value="cons" />
+              <div class="segmented" role="group" aria-label="Perfil GO">
+                <button type="button" id="btnGoLow">Bajo</button>
+                <button type="button" id="btnGoAvg">Promedio</button>
+                <button type="button" id="btnGoCons" class="active">Conservador</button>
+              </div>
+              <div class="hint">Ajusta Tasación/Títulos/Escritura/Notaría según rangos. CBR y timbres se calculan automáticos.</div>
+            </div>
+    
+
             <div class="field span-3">
               <label for="tasacionUF">Tasación (UF)</label>
               <input id="tasacionUF" type="text" data-uf="1" value="4,10" />
@@ -1175,7 +1187,7 @@ const $ = (id) => document.getElementById(id);
       'nombre','rut','email','profesion',
       'phoneCountry','telLocal',
       'uf','rol','sup','valorUF','valorCLP','antiguedad','contribuciones','direccion','region','comuna','ciudad','piePct',
-      'tasacionUF','estudioUF','escrituraUF','notariaCLP','impMutuoPct',
+      'goPreset','tasacionUF','estudioUF','escrituraUF','notariaCLP','impMutuoPct',
       'corMode','corPct','corNeto',
       'plazoAnios','tasaAnual','segurosUF','rentaCliente','rentaComp'
     ];
@@ -1230,7 +1242,7 @@ const $ = (id) => document.getElementById(id);
       'nombre','rut','email','profesion',
       'phoneCountry','telLocal',
       'uf','rol','sup','valorUF','valorCLP','antiguedad','contribuciones','direccion','region','comuna','ciudad',
-      'notariaUF','conservUF','tasacionUF','estudioUF','escrituraUF','impMutuoPct',
+      'goPreset','notariaCLP','tasacionUF','estudioUF','escrituraUF','impMutuoPct',
       'corPct',
       'piePct','plazoAnios','tasaAnual','segurosUF','rentaCliente','rentaComp'
     ];
@@ -1743,6 +1755,69 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
   $('btnPdfPremium').addEventListener('click', printPremium);
 
 
+  
+  // GO Presets (Bajo / Promedio / Conservador)
+  const GO_PRESETS = {
+    low:  { tas: 3.00, tit: 4.50, esc: 2.60, not: 80000 },
+    avg:  { tas: 3.70, tit: 5.50, esc: 3.20, not: 95000 },
+    cons: { tas: 4.10, tit: 6.20, esc: 3.60, not: 110000 }
+  };
+
+  function setGoPreset(key, applyValues=true){
+    const preset = GO_PRESETS[key] || GO_PRESETS.cons;
+    const hidden = document.getElementById('goPreset');
+    if(hidden) hidden.value = key;
+
+    // Active button styling
+    const map = { low:'btnGoLow', avg:'btnGoAvg', cons:'btnGoCons' };
+    for(const k of Object.keys(map)){
+      const b = document.getElementById(map[k]);
+      if(b) b.classList.toggle('active', k === key);
+    }
+
+    if(applyValues){
+      if(window.setUFInput){
+        setUFInput($('tasacionUF'), preset.tas);
+        setUFInput($('estudioUF'), preset.tit);
+        setUFInput($('escrituraUF'), preset.esc);
+      }else{
+        if($('tasacionUF')) $('tasacionUF').value = String(preset.tas).replace('.',',');
+        if($('estudioUF')) $('estudioUF').value = String(preset.tit).replace('.',',');
+        if($('escrituraUF')) $('escrituraUF').value = String(preset.esc).replace('.',',');
+      }
+      if(window.setCLPInput){
+        setCLPInput($('notariaCLP'), preset.not);
+      }else{
+        if($('notariaCLP')) $('notariaCLP').value = String(preset.not);
+      }
+      initInputMasks();
+      recalc();
+      saveState();
+      if(typeof autosaveDraft === "function") autosaveDraft();
+    }
+  }
+
+  function getGoPreset(){
+    const v = document.getElementById('goPreset')?.value;
+    if(v === "low" || v === "avg" || v === "cons") return v;
+    return "cons";
+  }
+
+  function presetLabel(k){
+    if(k === "low") return "Bajo";
+    if(k === "avg") return "Promedio";
+    return "Conservador";
+  }
+
+  // Hook buttons
+  document.getElementById('btnGoLow')?.addEventListener('click', () => setGoPreset('low', true));
+  document.getElementById('btnGoAvg')?.addEventListener('click', () => setGoPreset('avg', true));
+  document.getElementById('btnGoCons')?.addEventListener('click', () => setGoPreset('cons', true));
+
+  // Ensure UI reflects stored preset (without overriding manual values)
+  try{ setGoPreset(getGoPreset(), false); }catch(e){}
+
+
   // GO Modal
   function openGoModal(){
     try{
@@ -1753,6 +1828,9 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
       if(muf) muf.textContent = uf;
       if(mclp) mclp.textContent = clp;
     }catch(e){}
+          const p = document.getElementById('goModalPreset');
+      if(p) p.textContent = presetLabel(getGoPreset());
+
     document.getElementById('goModal')?.classList.add('open');
   }
   function closeGoModal(){ document.getElementById('goModal')?.classList.remove('open'); }
