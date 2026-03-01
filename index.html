@@ -365,27 +365,156 @@
       #pdfSheet .bigbox .row{ padding: 3px 0; font-size: 12px; }
       #pdfSheet .bigbox .total, #pdfSheet .summary .grand{ font-size: 16px; }
     }
-      .versionBadge{
+      /* Modal GO */
+    .modalOverlay{
       position: fixed;
-      right: 10px;
-      bottom: 10px;
-      font-size: 11px;
-      font-weight: 900;
-      color: rgba(43,71,98,.85);
-      background: rgba(255,255,255,.7);
-      border: 1px solid rgba(229,231,235,.95);
-      border-radius: 999px;
-      padding: 6px 10px;
-      box-shadow: 0 8px 18px rgba(17,24,39,.06);
-      backdrop-filter: blur(6px);
-      z-index: 9999;
+      inset: 0;
+      background: rgba(17,24,39,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 10000;
     }
+    .modalOverlay.open{ display:flex; }
+    .modal{
+      max-width: 760px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid rgba(229,231,235,.95);
+      box-shadow: 0 24px 60px rgba(17,24,39,.20);
+      overflow: hidden;
+    }
+    .modalHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px 14px;
+      background: rgba(31,101,164,.10);
+      border-bottom: 1px solid rgba(229,231,235,.95);
+    }
+    .modalHeader strong{ color: var(--accentDark); }
+    .modalBody{ padding: 14px; }
+    .modalBody table{
+      width:100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .modalBody th, .modalBody td{
+      text-align:left;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(229,231,235,.95);
+      vertical-align: top;
+    }
+    .modalBody th{ color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing:.06em;}
+    .modalFooter{
+      padding: 12px 14px;
+      background: rgba(245,247,250,.8);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+
+    .autosavePill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(229,231,235,.95);
+      background: rgba(255,255,255,.7);
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .autosaveDot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(22,163,74,.9);
+      box-shadow: 0 0 0 3px rgba(22,163,74,.12);
+    }
+    .autosaveTime{ font-weight: 900; color: var(--accentDark); }
+
+    /* Simple modal */
+    .modalOverlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(17,24,39,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      z-index: 10000;
+    }
+    .modalOverlay.open{ display:flex; }
+    .modal{
+      width: min(820px, 100%);
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(229,231,235,.95);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+    }
+    .modalHeader{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom: 10px;
+    }
+    .modalHeader h3{ margin:0; font-size: 16px; }
+    .list{
+      border:1px solid rgba(229,231,235,.95);
+      border-radius: 14px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .rowItem{
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+      padding: 10px 12px;
+      border-top:1px solid rgba(229,231,235,.9);
+      font-size: 13px;
+    }
+    .rowItem:first-child{ border-top:none; }
+    .rowItem .meta{ color: var(--muted); font-size: 12px; margin-top:2px; }
+    .rowItem .title{ font-weight: 900; }
+    .rowActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .smallBtn{ padding: 7px 10px; border-radius: 12px; font-size: 12px; }
+
+    /* Action sheet (Cerrar reunión) */
+    .actionSheetOverlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(17,24,39,.45);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 14px;
+      z-index: 12000;
+    }
+    .actionSheetOverlay.open{ display:flex; }
+    .actionSheet{
+      width: min(520px, 100%);
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(229,231,235,.95);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .sheetTitle{ font-weight: 900; margin: 2px 2px 8px; color: var(--accentDark); }
+    .sheetHint{ font-size: 12px; color: var(--muted); margin: 0 2px 10px; line-height: 1.3; }
+    .sheetRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; padding: 8px 10px; border:1px solid rgba(229,231,235,.95); border-radius: 14px; background:#fff; }
+    .sheetRow label{ font-size: 13px; font-weight: 900; color: var(--ink); }
+    .sheetRow input{ transform: scale(1.1); }
+    .sheetBtns{ display:grid; gap:8px; margin-top: 10px; }
+    .sheetBtns button{ width: 100%; padding: 12px; border-radius: 14px; font-size: 14px; }
+    .sheetBtns .danger{ border-style:dashed; opacity:.85; }
 </style>
 </head>
 
 <body class="mode-client">
-  <div class="versionBadge">Ferran · v12</div>
-  <div class="page">
+<div class="page">
     <div class="card" id="app">
       <header>
         <div class="brand">
@@ -409,8 +538,19 @@
       <div class="btnrow no-print" style="margin: 0 2px 12px;">
         <button type="button" class="primary" id="btnRecalc">Recalcular</button>
         <button type="button" id="btnReset">Limpiar</button>
+
+        <span class="autosavePill" id="autosavePill" title="Auto-guardado en este dispositivo (navegador)">
+          <span class="autosaveDot"></span>
+          Auto-guardado: <span class="autosaveTime" id="autosaveTime">—</span>
+        </span>
+        <button type="button" id="btnGuardarFicha">Guardar ficha</button>
+        <button type="button" id="btnCargarFicha">Cargar ficha</button>
+        <button type="button" id="btnHistorial">Historial</button>
+        <input type="file" id="fileLoader" accept="application/json" style="display:none" />
+
         <button type="button" class="ghost" id="btnUf">Actualizar UF</button>
         <button type="button" class="primary" id="btnPdfPremium">Generar PDF premium (A4)</button>
+        <button type="button" class="primary" id="btnCerrarReunion" title="Guarda ficha + genera PDF + abre WhatsApp">Cerrar reunión</button>
         <button type="button" id="btnWhats">WhatsApp</button>
         <button type="button" id="btnMail">Email</button>
       </div>
@@ -542,27 +682,15 @@
 
             <div class="field span-3">
               <label for="comuna">Comuna</label>
-              <input id="comuna" class="user-input" list="listaComunas" type="text" placeholder="Escribe o elige" />
+              <input id="comuna" class="user-input" type="text" placeholder="Escribe" />
             </div>
 
             <div class="field span-3">
               <label for="ciudad">Ciudad</label>
-              <input id="ciudad" class="user-input" list="listaCiudades" type="text" placeholder="Escribe o elige" />
+              <input id="ciudad" class="user-input" type="text" placeholder="Escribe" />
             </div>
           </div>
-
-          <datalist id="listaComunas">
-            <option>Temuco</option><option>Padre Las Casas</option><option>Villarrica</option><option>Pucón</option>
-            <option>Valdivia</option><option>Puerto Varas</option><option>Puerto Montt</option><option>Osorno</option>
-            <option>Santiago</option><option>Providencia</option><option>Las Condes</option><option>Ñuñoa</option><option>Vitacura</option>
-            <option>Concepción</option><option>San Pedro de la Paz</option><option>Chillán</option><option>La Serena</option><option>Coquimbo</option>
-            <option>Viña del Mar</option><option>Valparaíso</option>
-          </datalist>
-          <datalist id="listaCiudades">
-            <option>Temuco</option><option>Valdivia</option><option>Puerto Montt</option><option>Puerto Varas</option><option>Osorno</option>
-            <option>Santiago</option><option>Concepción</option><option>Chillán</option><option>La Serena</option><option>Viña del Mar</option>
-          </datalist>
-        </section>
+</section>
 
         <section class="section" aria-label="03 Gastos Operacionales">
           <h2>
@@ -573,25 +701,26 @@
           <div class="formgrid advisor-only">
             <div class="field span-3">
               <label for="tasacionUF">Tasación (UF)</label>
-              <input id="tasacionUF" type="text" data-uf="1" value="3,50" />
+              <input id="tasacionUF" type="text" data-uf="1" value="4,10" />
               <div class="hint">Rango ref.: 2,5 a 4,5 UF</div>
             </div>
 
             <div class="field span-3">
               <label for="estudioUF">Estudio de títulos (UF)</label>
-              <input id="estudioUF" type="text" data-uf="1" value="5,00" />
+              <input id="estudioUF" type="text" data-uf="1" value="6,20" />
               <div class="hint">Rango ref.: 3 a 7 UF</div>
             </div>
 
             <div class="field span-3">
               <label for="escrituraUF">Redacción de escritura (UF)</label>
-              <input id="escrituraUF" type="text" data-uf="1" value="2,50" />
+              <input id="escrituraUF" type="text" data-uf="1" value="3,60" />
               <div class="hint">Rango ref.: 2 a 4 UF</div>
             </div>
 
             <div class="field span-3">
               <label for="notariaCLP">Gastos notariales ($)</label>
-              <input id="notariaCLP" type="text" data-clp="1" value="100000" />
+              <input id="notariaCLP" type="text" data-clp="1" value="110000" />
+              <div class="hint">Puede aumentar por carillas (editable).</div>
               <div class="hint">Rango ref.: $60.000 a $120.000</div>
             </div>
 
@@ -825,9 +954,65 @@
     </div>
   </div>
 
+
+  <div class="modalOverlay" id="goModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Detalle Gastos Operacionales">
+      <div class="modalHeader">
+        <strong>Gastos Operacionales Crédito Hipotecario (Araucanía 2026)</strong>
+        <button type="button" id="btnGoClose">Cerrar</button>
+      </div>
+      <div class="modalBody">
+        <table>
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Estimación</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tasación</td>
+              <td>2,5 a 4,5 UF</td>
+              <td>Peritos externos; varía por zona.</td>
+            </tr>
+            <tr>
+              <td>Estudio de títulos</td>
+              <td>3 a 7 UF</td>
+              <td>Revisión legal e historial jurídico.</td>
+            </tr>
+            <tr>
+              <td>Redacción de escritura</td>
+              <td>2 a 4 UF</td>
+              <td>Usualmente incluido con el pack legal.</td>
+            </tr>
+            <tr>
+              <td>Gastos notariales</td>
+              <td>$60.000 a $120.000</td>
+              <td>Depende de copias y carillas (editable).</td>
+            </tr>
+            <tr>
+              <td>Inscripción CBR</td>
+              <td>0,2% del valor</td>
+              <td>Tope aprox. $262.200 a $600.000.</td>
+            </tr>
+            <tr>
+              <td>Impuesto timbres</td>
+              <td>0,8% del crédito</td>
+              <td>0,2% si DFL2 (&lt;140 m²). Automático por m².</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modalFooter">
+        Valores referenciales. El banco/Notaría/CBR puede variar montos por caso, fecha y documentos. El simulador usa una configuración promedio conservadora.
+      </div>
+    </div>
+  </div>
+
 <script>
   const IVA = 0.19;
-  const STORAGE_KEY = "simPro_premium_v12";
+  const STORAGE_KEY = "simPro_premium_v14";
   // URL params (modo blindado):
   // - Sin parámetros: Modo Cliente fijo (no muestra Modo Asesor)
   // - Cliente:        ?client=1   (igual, Modo Cliente fijo)
@@ -986,6 +1171,199 @@ const $ = (id) => document.getElementById(id);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STORAGE_KEY + "_mode");
   }
+
+  
+  // === Auto-guardado + Fichas (v14) ===
+  const HIST_KEY = STORAGE_KEY + "_hist";
+  const DRAFT_KEY = STORAGE_KEY + "_draft";
+  const MAX_HIST = 30;
+
+  function nowISO(){
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2,"0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function setAutosaveTime(ts){
+    const el = $('autosaveTime');
+    if(!el) return;
+    el.textContent = ts || "—";
+  }
+
+  function collectFormState(){
+    const ids = [
+      'nombre','rut','email','profesion',
+      'phoneCountry','telLocal',
+      'uf','rol','sup','valorUF','valorCLP','antiguedad','contribuciones','direccion','region','comuna','ciudad',
+      'notariaUF','conservUF','tasacionUF','estudioUF','escrituraUF','impMutuoPct',
+      'corPct',
+      'piePct','plazoAnios','tasaAnual','segurosUF','rentaCliente','rentaComp'
+    ];
+    const s = {};
+    for(const id of ids){
+      const el = $(id);
+      if(el) s[id] = el.value;
+    }
+    s.ufDate = $('ufDate')?.textContent || "manual";
+    s.lastPropEdit = window._lastPropEdit || "UF";
+    s._meta = {
+      savedAt: nowISO(),
+      nombre: $('nombre')?.value || "",
+      rut: $('rut')?.value || "",
+      valorUF: $('valorUF')?.value || "",
+      valorCLP: $('valorCLP')?.value || ""
+    };
+    return s;
+  }
+
+  function applyFormState(s){
+    if(!s) return;
+    for(const [id,val] of Object.entries(s)){
+      if(id === "_meta") continue;
+      const el = $(id);
+      if(el && typeof val !== "undefined") el.value = val;
+    }
+    if(s.ufDate && $('ufDate')) $('ufDate').textContent = s.ufDate;
+    window._lastPropEdit = s.lastPropEdit || "UF";
+    initInputMasks();
+    updatePhoneUI();
+    $('rut').value = formatRut($('rut').value);
+    recalc();
+  }
+
+  function getHist(){
+    try{
+      return JSON.parse(localStorage.getItem(HIST_KEY) || "[]");
+    }catch(e){ return []; }
+  }
+  function setHist(arr){
+    localStorage.setItem(HIST_KEY, JSON.stringify(arr));
+  }
+
+  // Auto-guardado: guarda un "borrador" cada 1.2s como máximo (throttle)
+  let _saveTimer = null;
+  function autosaveDraft(){
+    if(_saveTimer) return;
+    _saveTimer = setTimeout(() => {
+      _saveTimer = null;
+      const draft = collectFormState();
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+      setAutosaveTime(draft._meta?.savedAt || nowISO());
+    }, 1200);
+  }
+
+  function loadDraftIfAny(){
+    try{
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if(!raw) return;
+      const draft = JSON.parse(raw);
+      if(draft && draft._meta && draft._meta.savedAt){
+        applyFormState(draft);
+        setAutosaveTime(draft._meta.savedAt);
+      }
+    }catch(e){}
+  }
+
+  // Guardar ficha: agrega al historial y descarga JSON
+  function downloadJSON(obj, filename){
+    const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 400);
+  }
+
+  function slug(s){
+    return (s || "cliente")
+      .toString()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-zA-Z0-9]+/g,"-")
+      .replace(/(^-|-$)/g,"")
+      .toLowerCase();
+  }
+
+  function guardarFicha(){
+    const data = collectFormState();
+    const hist = getHist();
+    hist.unshift(data);
+    setHist(hist.slice(0, MAX_HIST));
+
+    const name = slug(data._meta?.nombre || "cliente");
+    const date = (data._meta?.savedAt || nowISO()).split(" ")[0];
+    downloadJSON(data, `Simulacion_${name}_${date}.json`);
+    renderHist();
+  }
+
+  function cargarFichaFromFile(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(String(reader.result || "{}"));
+        applyFormState(data);
+        autosaveDraft();
+      }catch(e){
+        alert("Archivo inválido. Debe ser un .json exportado por el simulador.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Historial modal
+  function openHist(){ $('histModal')?.classList.add("open"); renderHist(); }
+  function closeHist(){ $('histModal')?.classList.remove("open"); }
+
+  function renderHist(){
+    const box = $('histList');
+    if(!box) return;
+    const hist = getHist();
+    if(hist.length === 0){
+      box.innerHTML = `<div class="rowItem"><div><div class="title">Sin fichas guardadas</div><div class="meta">Usa “Guardar ficha” para crear un archivo y guardarlo aquí.</div></div></div>`;
+      return;
+    }
+    box.innerHTML = hist.map((item, idx) => {
+      const m = item._meta || {};
+      const title = (m.nombre ? m.nombre : "Sin nombre") + (m.rut ? ` · ${m.rut}` : "");
+      const meta = `${m.savedAt || ""} · Venta: ${m.valorUF || "—"} UF`;
+      return `
+        <div class="rowItem">
+          <div>
+            <div class="title">${title}</div>
+            <div class="meta">${meta}</div>
+          </div>
+          <div class="rowActions">
+            <button type="button" class="smallBtn" data-act="abrir" data-idx="${idx}">Abrir</button>
+            <button type="button" class="smallBtn" data-act="desc" data-idx="${idx}">Descargar</button>
+            <button type="button" class="smallBtn" data-act="del" data-idx="${idx}">Borrar</button>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function handleHistClick(e){
+    const btn = e.target?.closest?.("button[data-act]");
+    if(!btn) return;
+    const act = btn.getAttribute("data-act");
+    const idx = Number(btn.getAttribute("data-idx") || "0");
+    const hist = getHist();
+    const item = hist[idx];
+    if(!item) return;
+    if(act === "abrir"){ applyFormState(item); autosaveDraft(); closeHist(); }
+    if(act === "desc"){
+      const name = slug(item._meta?.nombre || "cliente");
+      const date = (item._meta?.savedAt || nowISO()).split(" ")[0];
+      downloadJSON(item, `Simulacion_${name}_${date}.json`);
+    }
+    if(act === "del"){
+      hist.splice(idx,1);
+      setHist(hist);
+      renderHist();
+    }
+  }
+
 
   // UF API
   async function updateUf(){
@@ -1303,11 +1681,12 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
 
     recalc();
     saveState();
+    autosaveDraft();
   });
 
-  $('phoneCountry').addEventListener('change', () => { updatePhoneUI(); saveState(); });
+  $('phoneCountry').addEventListener('change', () => { updatePhoneUI(); saveState(); autosaveDraft(); });
 
-  $('btnRecalc').addEventListener('click', () => { recalc(); saveState(); });
+  $('btnRecalc').addEventListener('click', () => { recalc(); saveState(); autosaveDraft(); });
   $('btnReset').addEventListener('click', () => {
     $('simForm').reset();
     // Dejar “limpio” sin resultados
@@ -1318,6 +1697,8 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
     if($('rentaComp')) $('rentaComp').value = '0';
     $('ufDate').textContent = 'manual';
     clearState();
+    localStorage.removeItem(DRAFT_KEY);
+    setAutosaveTime('—');
     initInputMasks();
     updatePhoneUI();
     recalc();
@@ -1325,8 +1706,63 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
 
   $('btnUf').addEventListener('click', updateUf);
   $('btnPdfPremium').addEventListener('click', printPremium);
-  $('btnWhats').addEventListener('click', sendWhats);
+
+  // Cerrar reunión (menú)
+  function openCloseSheet(){ document.getElementById('closeSheet')?.classList.add('open'); }
+  function closeCloseSheet(){ document.getElementById('closeSheet')?.classList.remove('open'); }
+  function wantSaveFicha(){ return document.getElementById('chkSaveFicha')?.checked !== false; }
+
+  function doSaveFichaSafe(){ try{ if(wantSaveFicha()) guardarFicha(); }catch(e){} }
+  function doPdfSafe(){ try{ printPremium(); }catch(e){} }
+  function doWhatsSafe(){ try{ sendWhats(); }catch(e){} }
+
+  $('btnCerrarReunion')?.addEventListener('click', () => openCloseSheet());
+  document.getElementById('optCancel')?.addEventListener('click', closeCloseSheet);
+
+  document.getElementById('optAll')?.addEventListener('click', () => {
+    closeCloseSheet();
+    doSaveFichaSafe();
+    doPdfSafe();
+    setTimeout(() => doWhatsSafe(), 1200);
+  });
+
+  document.getElementById('optPdf')?.addEventListener('click', () => {
+    closeCloseSheet();
+    doSaveFichaSafe();
+    doPdfSafe();
+  });
+
+  document.getElementById('optWa')?.addEventListener('click', () => {
+    closeCloseSheet();
+    doSaveFichaSafe();
+    // Copiar resumen ya lo hace sendWhats() internamente
+    setTimeout(() => doWhatsSafe(), 150);
+  });
+
+  // Cerrar tocando fuera del panel
+  document.getElementById('closeSheet')?.addEventListener('click', (e) => {
+    if(e.target && e.target.id === 'closeSheet') closeCloseSheet();
+  });
+
+  // Cerrar reunión = Guardar ficha + PDF premium + WhatsApp (resumen)
+  // Nota iOS: la descarga (Guardar ficha) y el PDF pueden abrir diálogos; WhatsApp se abre al final (best-effort).
+$('btnWhats').addEventListener('click', sendWhats);
   $('btnMail').addEventListener('click', sendMail);
+  // Fichas
+  const fileLoader = $('fileLoader');
+  $('btnGuardarFicha')?.addEventListener('click', guardarFicha);
+  $('btnCargarFicha')?.addEventListener('click', () => fileLoader?.click());
+  fileLoader?.addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(f) cargarFichaFromFile(f);
+    e.target.value = "";
+  });
+  $('btnHistorial')?.addEventListener('click', openHist);
+  $('btnHistClose')?.addEventListener('click', closeHist);
+  $('btnHistClear')?.addEventListener('click', () => { if(confirm("¿Borrar historial de este dispositivo?")){ setHist([]); renderHist(); } });
+  $('btnHistExportAll')?.addEventListener('click', () => downloadJSON(getHist(), "Historial_Simulaciones.json"));
+  $('histList')?.addEventListener('click', handleHistClick);
+
 
   // Acceso Asesor (oculto):
   // - iPhone/iPad: toca el LOGO 7 veces rápido para pedir la clave.
@@ -1412,6 +1848,8 @@ if('serviceWorker' in navigator){
 
   // Init
   loadState();
+  loadDraftIfAny();
+  renderHist();
   initInputMasks();
   updatePhoneUI();
   const savedMode = localStorage.getItem(STORAGE_KEY + "_mode") || "client";
@@ -1422,5 +1860,39 @@ if('serviceWorker' in navigator){
   window._lastPropEdit = window._lastPropEdit || "UF";
   recalc();
 </script>
+
+  <div class="modalOverlay" id="histModal" role="dialog" aria-modal="true" aria-label="Historial de fichas">
+    <div class="modal">
+      <div class="modalHeader">
+        <h3>Historial de fichas (este dispositivo)</h3>
+        <div class="rowActions">
+          <button type="button" class="smallBtn" id="btnHistExportAll">Exportar todo (JSON)</button>
+          <button type="button" class="smallBtn" id="btnHistClear">Borrar historial</button>
+          <button type="button" class="smallBtn primary" id="btnHistClose">Cerrar</button>
+        </div>
+      </div>
+      <div class="hint">Tip: “Guardar ficha” descarga un archivo .json que puedes archivar por cliente. “Cargar ficha” restaura una simulación.</div>
+      <div class="list" id="histList" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <div class="actionSheetOverlay" id="closeSheet" role="dialog" aria-modal="true" aria-label="Cerrar reunión">
+    <div class="actionSheet">
+      <div class="sheetTitle">Cerrar reunión</div>
+      <div class="sheetHint">Elige qué quieres generar. En iPhone/iPad pueden aparecer diálogos de guardar/imprimir.</div>
+
+      <div class="sheetRow" style="margin-bottom:10px;">
+        <label for="chkSaveFicha">Guardar ficha (JSON)</label>
+        <input type="checkbox" id="chkSaveFicha" checked />
+      </div>
+
+      <div class="sheetBtns">
+        <button type="button" class="primary" id="optAll">PDF + WhatsApp</button>
+        <button type="button" id="optPdf">Solo PDF</button>
+        <button type="button" id="optWa">Solo WhatsApp</button>
+        <button type="button" class="danger" id="optCancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
