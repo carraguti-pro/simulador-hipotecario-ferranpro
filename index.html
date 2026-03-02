@@ -543,10 +543,27 @@
       white-space:nowrap;
     }
     .goTag strong{ color: var(--accentDark); }
+
+    #btnHistX{ min-width: 38px; padding: 7px 10px; border-radius: 12px; }
+
+    /* Teléfono: país más legible */
+    #phoneCountry{ min-width: 120px; }
+    @media (max-width: 720px){
+      #phoneCountry{ min-width: 110px; }
+    }
 </style>
 </head>
 
 <body class="mode-client">
+  <script>
+    window.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        var h = document.getElementById('histModal'); if(h) h.classList.remove('open');
+        var g = document.getElementById('goModal'); if(g) g.classList.remove('open');
+        var s = document.getElementById('closeSheet'); if(s) s.classList.remove('open');
+      }
+    });
+  </script>
 <div class="page">
     <div class="card" id="app">
       <header>
@@ -606,13 +623,14 @@
               <label>Teléfono</label>
               <div class="phoneRow">
                 <select class="user-input" id="phoneCountry">
-                  <option value="CL" selected>Chile (+56)</option>
-                  <option value="AR">Argentina (+54)</option>
-                  <option value="PE">Perú (+51)</option>
-                  <option value="CO">Colombia (+57)</option>
-                  <option value="ES">España (+34)</option>
-                  <option value="US">USA (+1)</option>
-                </select>
+                <option value="CL" selected>Chile (+56)</option>
+                <option value="AR">Argentina (+54)</option>
+                <option value="PE">Perú (+51)</option>
+                <option value="US">USA (+1)</option>
+                <option value="OT">Otro</option>
+    
+              </select>
+              <span id="phoneCode" class="tag" style="min-width:52px;text-align:center;">+56</span>
                 <span class="phonePrefix" id="phonePrefix">9</span>
                 <input class="user-input" id="telLocal" type="text" inputmode="numeric" placeholder="1234 5678" />
               </div>
@@ -1002,7 +1020,7 @@
   </div>
 
 
-  <div class="modalOverlay" id="goModal" aria-hidden="true">
+  <div class="modalOverlay" id="goModal" aria-hidden="true" onclick="if(event.target && event.target.id===\'goModal\'){this.classList.remove(\'open\');}">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Detalle Gastos Operacionales">
       <div class="modalHeader">
         <strong>Gastos Operacionales Crédito Hipotecario (Araucanía 2026)</strong>
@@ -1855,22 +1873,21 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
 
   document.getElementById('optAll')?.addEventListener('click', () => {
     closeCloseSheet();
-    doSaveFichaSafe();
-    doPdfSafe();
-    setTimeout(() => doWhatsSafe(), 1200);
+    setTimeout(() => { doSaveFichaSafe(); }, 0);
+    setTimeout(() => { doPdfSafe(); }, 200);
+    setTimeout(() => { doWhatsSafe(); }, 1500);
   });
 
   document.getElementById('optPdf')?.addEventListener('click', () => {
     closeCloseSheet();
-    doSaveFichaSafe();
-    doPdfSafe();
+    setTimeout(() => { doSaveFichaSafe(); }, 0);
+    setTimeout(() => { doPdfSafe(); }, 200);
   });
 
   document.getElementById('optWa')?.addEventListener('click', () => {
     closeCloseSheet();
-    doSaveFichaSafe();
-    // Copiar resumen ya lo hace sendWhats() internamente
-    setTimeout(() => doWhatsSafe(), 150);
+    setTimeout(() => { doSaveFichaSafe(); }, 0);
+    setTimeout(() => { doWhatsSafe(); }, 200);
   });
 
   // Cerrar tocando fuera del panel
@@ -1995,14 +2012,15 @@ if('serviceWorker' in navigator){
   recalc();
 </script>
 
-  <div class="modalOverlay" id="histModal" role="dialog" aria-modal="true" aria-label="Historial de fichas">
+  <div class="modalOverlay" id="histModal" role="dialog" aria-modal="true" aria-label="Historial de fichas" onclick="if(event.target && event.target.id===\'histModal\'){this.classList.remove(\'open\');}">
     <div class="modal">
       <div class="modalHeader">
         <h3>Historial de fichas (este dispositivo)</h3>
+        <button type="button" class="smallBtn" id="btnHistX" onclick="document.getElementById('histModal')?.classList.remove('open');" aria-label="Cerrar">✕</button>
         <div class="rowActions">
           <button type="button" class="smallBtn" id="btnHistExportAll">Exportar todo (JSON)</button>
           <button type="button" class="smallBtn" id="btnHistClear">Borrar historial</button>
-          <button type="button" class="smallBtn primary" id="btnHistClose">Cerrar</button>
+          <button type="button" class="smallBtn primary" id="btnHistClose" onclick="document.getElementById(\'histModal\')?.classList.remove(\'open\');">Cerrar</button>
         </div>
       </div>
       <div class="hint">Tip: “Guardar ficha” descarga un archivo .json que puedes archivar por cliente. “Cargar ficha” restaura una simulación.</div>
@@ -2010,9 +2028,12 @@ if('serviceWorker' in navigator){
     </div>
   </div>
 
-  <div class="actionSheetOverlay" id="closeSheet" role="dialog" aria-modal="true" aria-label="Cerrar reunión">
+  <div class="actionSheetOverlay" id="closeSheet" role="dialog" aria-modal="true" aria-label="Cerrar reunión" onclick="if(event.target && event.target.id===\'closeSheet\'){this.classList.remove(\'open\');}">
     <div class="actionSheet">
-      <div class="sheetTitle">Cerrar reunión</div>
+      <div class="modalHeader" style="margin-bottom:6px;">
+  <div class="sheetTitle">Cerrar reunión</div>
+  <button type="button" class="smallBtn" id="btnCloseSheetX" onclick="document.getElementById('closeSheet')?.classList.remove('open');" aria-label="Cerrar">✕</button>
+</div>
       <div class="sheetHint">Elige qué quieres generar. En iPhone/iPad pueden aparecer diálogos de guardar/imprimir.</div>
 
       <div class="sheetRow" style="margin-bottom:10px;">
@@ -2024,7 +2045,7 @@ if('serviceWorker' in navigator){
         <button type="button" class="primary" id="optAll">PDF + WhatsApp</button>
         <button type="button" id="optPdf">Solo PDF</button>
         <button type="button" id="optWa">Solo WhatsApp</button>
-        <button type="button" class="danger" id="optCancel">Cancelar</button>
+        <button type="button" class="danger" id="optCancel" onclick="document.getElementById('closeSheet')?.classList.remove('open');">Cancelar</button>
       </div>
     </div>
   </div>
