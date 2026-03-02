@@ -210,13 +210,14 @@
       align-items:center;
       flex-wrap: wrap;
     }
-    #phoneCountry{ flex: 1 1 150px; min-width: 140px; }
-    #phoneCode{ flex: 0 0 auto; min-width: 44px; text-align:center; }
-    #phonePrefix{ flex: 0 0 44px; }
-    #telLocal{ flex: 1 1 170px; min-width: 150px; }
+    #phoneCountry{ flex: 1 1 160px; min-width: 150px; }
+    #phoneCode{ flex: 0 0 auto; min-width: 70px; text-align:center; }
+    #telLocal{ flex: 1 1 190px; min-width: 170px; }
     @media (max-width: 520px){
-      #phoneCountry{ min-width: 120px; }
-      #telLocal{ min-width: 140px; }
+      #phoneCountry{ min-width: 140px; }
+      #telLocal{ min-width: 160px; }
+    }
+#telLocal{ min-width: 140px; }
     }
     .phoneRow select{ width: 46%; }
     .phonePrefix{
@@ -560,6 +561,11 @@
     @media (max-width: 720px){
       #phoneCountry{ min-width: 110px; }
     }
+
+    /* Teléfono formato CL */
+    #phonePrefix{ display:none; } /* se mantiene internamente */
+    #phoneCode{ font-weight: 900; }
+    #telLocal{ letter-spacing: .02em; }
 </style>
 </head>
 
@@ -639,7 +645,7 @@
                 <option value="OT">Otro</option>
     
               </select>
-              <span id="phoneCode" class="tag">+56</span>
+              <span id="phoneCode" class="tag">(+56) 9</span>
                 <span class="phonePrefix" id="phonePrefix">9</span>
                 <input class="user-input" id="telLocal" type="text" inputmode="numeric" placeholder="1234 5678" />
               </div>
@@ -1461,6 +1467,14 @@ const $ = (id) => document.getElementById(id);
     }
   }
 
+  
+  function onlyDigits(s){ return (s||"").toString().replace(/\D+/g,""); }
+  function formatPhoneLocalCL(s){
+    const d = onlyDigits(s).slice(0,8);
+    if(d.length <= 4) return d;
+    return d.slice(0,4) + " " + d.slice(4);
+  }
+
   function initInputMasks(){
     document.querySelectorAll('input[data-clp="1"]').forEach((el) => {
       el.addEventListener("focus", () => { el.value = String(parseCLPText(el.value) || 0); el.select?.(); });
@@ -1759,6 +1773,19 @@ const divEstimUF = calcPaymentUF(creditoUF, tasa, plazo);
   });
 
   $('phoneCountry').addEventListener('change', () => { updatePhoneUI(); saveState(); autosaveDraft(); });
+  // Formato teléfono (Chile): 1234 5678
+  const tel = $('telLocal');
+  if(tel){
+    tel.addEventListener('input', () => {
+      if($('phoneCountry')?.value === 'CL'){
+        const cur = tel.value;
+        tel.value = formatPhoneLocalCL(cur);
+      }
+      saveState();
+      if(typeof autosaveDraft === "function") autosaveDraft();
+    });
+  }
+
 
   $('btnRecalc').addEventListener('click', () => { recalc(); saveState(); autosaveDraft(); });
   $('btnReset').addEventListener('click', () => {
