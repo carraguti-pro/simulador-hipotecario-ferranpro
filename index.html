@@ -208,6 +208,15 @@
       display:flex;
       gap:8px;
       align-items:center;
+      flex-wrap: wrap;
+    }
+    #phoneCountry{ flex: 1 1 150px; min-width: 140px; }
+    #phoneCode{ flex: 0 0 auto; min-width: 44px; text-align:center; }
+    #phonePrefix{ flex: 0 0 44px; }
+    #telLocal{ flex: 1 1 170px; min-width: 150px; }
+    @media (max-width: 520px){
+      #phoneCountry{ min-width: 120px; }
+      #telLocal{ min-width: 140px; }
     }
     .phoneRow select{ width: 46%; }
     .phonePrefix{
@@ -630,7 +639,7 @@
                 <option value="OT">Otro</option>
     
               </select>
-              <span id="phoneCode" class="tag" style="min-width:52px;text-align:center;">+56</span>
+              <span id="phoneCode" class="tag">+56</span>
                 <span class="phonePrefix" id="phonePrefix">9</span>
                 <input class="user-input" id="telLocal" type="text" inputmode="numeric" placeholder="1234 5678" />
               </div>
